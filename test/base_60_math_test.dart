@@ -1,14 +1,20 @@
+import 'dart:html';
+
+import 'package:flutter/foundation.dart';
+import 'package:quiver/collection.dart';
 import 'package:test/test.dart';
 import '';
+//try copywith & copy constructor or methods
 
+//generic
+List<T> reverse<T>(List<T> x) => List<T>.from(x.reversed);
 
-
-void reverse(x) => List.from(x.reversed);
 
 void main() {
 // -----------------------------------------------------------------------------
   group('base calculations', () {
     test('euclidean_divison', (){
+      [1,2,3].reversed;
       expect(base_60_math.euclidean_division(60, 37), equals([1, 60-37]));
     });
 
@@ -25,25 +31,33 @@ void main() {
       expect(base_60_math.base60_unit_subtraction(5, 4), equals([1, 0]));
     });
   });
+// -----------------------------------------------------------------------------
   group('2nd step integrated arthmetic functions', (){
-    test(, (){
-      a = base_60_math.Base60.from_commas('1,2,3,4,5');
-      b = base_60_math.Base60.from_commas('59,59,3,5');
-      c = base_60_math.add_items_in_list_number(a.number, b.number);
-      expect(actual, matcher)
+    test('add items in base number list (base60)', (){
+      Base60 a = base_60_math.Base60.from_commas('1,2,3,4,5');
+      Base60 b = base_60_math.Base60.from_commas('59,59,3,5');
+      Base60 c = base_60_math.add_items_in_list_number(a.number, b.number);
+      // [0, 59,59,3,  5]
+      // [1, 2, 3, 4,  5]
+      // [2, 2, 2, 7, 10]
+      expect(listEquals(c.number, [2, 2, 2, 7, 10]), isTrue);
     });
-    
+    test('add items in base number list (base60): carryover', (){
+      expect((listEquals(base_60_math.add_items_in_list_number(
+          [59, 59, 59, 59], [59, 59, 59, 59]), [1, 59, 59, 59, 58]), isTrue);
+    });
+    test('add items in base number list (base60) 2', (){
+      List<int> a = [7,17];
+      List<int> b = [23];
+      expect(listEquals(
+          base_60_math.add_items_in_list_number(a, b), [7, 23]), isTrue);
+      expect(listEquals(
+          base_60_math.add_items_in_list_number(b, a), [7, 23]), isTrue);
+    });
+
+
   });
 
-
-
-  def test_add_items_in_list_number():
-
-  # [0, 59, 59, 3, 5]
-  # [1, 2, 3, 4, 5]
-  # [2, 2, 2, 7,10]
-  assert c == [2, 2, 2, 7, 10]
-  assert base_60_math.add_items_in_list_number([59, 59, 59, 59], [59, 59, 59, 59]) == [1, 59, 59, 119 - 60, 118 - 60]
 
 
   def test_add_items_in_list_number2():
