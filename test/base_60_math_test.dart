@@ -6,7 +6,7 @@ import '';
 
 //generic
 List<T> reverse<T>(List<T> x) => List<T>.from(x.reversed);
-List<T> sorted<T>(List<T> x){List<T> y = List.from(x); y.sort(); return y}
+List<T> sorted<T>(List<T> x){List<T> y = List.from(x); y.sort(); return y;}
 
 
 void main() {
@@ -172,6 +172,7 @@ void main() {
       expect(base_60_math.prep_compare([1, 2, 1, 1], [1, 1], false, true), b.map(<T>(e) => reverse(e)).toList());
     });
   });
+
   group('sort, formatting and other', () {
     test('AbsBase60 sort', () {
       List<AbsBase60> init_ = [661, 409, 7236, 1976, 2764].map((e) => base_60_math.AbsBase60.from_int(e)).toList();
@@ -179,50 +180,28 @@ void main() {
       expect(base_60_math.sort(init_), final_);
 
     });
-    test('', () {
-
+    test('remove 0s from end frac list', () {
+      expect(base_60_math.remove_0s_from_end([23, 0, 0, 43, 4, 0, 0]), [23, 0, 0, 43, 4]);
     });
-    test('', (){
+    test('remove 0s from end 0', (){
+      expect(base_60_math.remove_0s_from_end([0]), []);
 
+      });
+    test('', (){
+      AbsBase60 a = base_60_math.inverse(base_60_math.AbsBase60.from_commas('2;30'));
+      expect(a, base_60_math.AbsBase60.from_commas(';24'));
     });
-    test('', (){
-
+    test('carry over reformat', (){
+      List<int> a = base_60_math.carry_over_reformat_base([43, 108, 70, 67, 23, 137]);
+      expect(base_60_math.carry_over_reformat_base([60, 59, 59, 59, 59]), [0, 0, 0, 0, 0, 1]);
+      expect(a, [43, 48, 11, 8, 24, 17, 2]);
     });
-    test('', (){
 
-    });
-    test('', (){
-
-    });
-    test('', (){
-
+    test('lazy division', (){
+      AbsBase60 a = base_60_math.AbsBase60.from_commas('2;30');
+      AbsBase60 b = base_60_math.AbsBase60.from_commas('1;30');
+      AbsBase60 c = base_60_math.lazy_division(a, b);
+      expect(c, base_60_math.AbsBase60.from_commas('1;40'));
     });
   });
-
-
-
-  //////////////////////////////
-
-  def test_remove_0s_from_end():
-  expect(base_60_math.remove_0s_from_end([23, 0, 0, 43, 4, 0, 0]), [23, 0, 0, 43, 4]
-  expect(base_60_math.remove_0s_from_end([0]), []
-
-
-  def test_inverse():
-  a = base_60_math.inverse(base_60_math.AbsBase60.from_commas('2;30'))
-  expect(a, base_60_math.AbsBase60.from_commas(';24')
-
-
-  def test_carry_over_reformat_base():
-  a = base_60_math.carry_over_reformat_base([43, 108, 70, 67, 23, 137])
-  expect(base_60_math.carry_over_reformat_base([60, 59, 59, 59, 59]), [0, 0, 0, 0, 0, 1]
-  expect(a, [43, 48, 11, 8, 24, 17, 2]
-
-  def test_divide():
-  a = base_60_math.AbsBase60.from_commas('2;30')
-  b = base_60_math.AbsBase60.from_commas('1;30')
-  c = base_60_math.lazy_division(a, b)
-  expect(c, base_60_math.AbsBase60.from_commas('1;40')
-
-
 }
