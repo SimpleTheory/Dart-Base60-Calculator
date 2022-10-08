@@ -82,5 +82,9 @@ void main() {
       Abs60 c1 = base_60_math.AbsBase60.from_commas('2;59,59,59,59,30').round();
       expect(c1, equals(base_60_math.AbsBase60.from_integer(3)));
     });
+    test('abs toString()', (){
+      AbsBase60 a = base_60_math.Base60.from_commas('3,4;12');
+      expect(a.toString(), equals('3,4;12'));
+    });
   });
 }

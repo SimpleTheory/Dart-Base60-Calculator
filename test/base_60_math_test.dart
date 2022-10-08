@@ -15,7 +15,6 @@ void main() {
       [1,2,3].reversed;
       expect(base_60_math.euclidean_division(60, 37), equals([1, 60-37]));
     });
-
     test('base add', (){
       expect(base_60_math.base60_unit_addition(3, 59), equals([2, 1]));
     });
@@ -93,70 +92,58 @@ void main() {
         expect(c, equals([[58, 57, 0, 0, 55], -1]));
       });
     });
-  group('Lazy integrated arthmetic', (){
-    test('', (){
+  group('Lazy integrated arthmetic SUB', (){
+    Base60 a = base_60_math.lazy_subtraction(base_60_math.Base60.from_commas('4,16;18'),
+                                              base_60_math.Base60.from_commas('1,12;6'));
+    Base60 b = base_60_math.lazy_subtraction(base_60_math.Base60.from_commas('1,12;6'),
+                                      base_60_math.Base60.from_commas('4,16;18'));
+    Base60 expected = base_60_math.Base60.from_commas('3,4;12');
+    test('Calc a worked', (){
 
-      expect(, equals());
+      expect(a, equals(expected));
     });
-    test('', (){
+    test('calc b worked', (){
 
-      expect(, equals());
+      expect(b.abs(), equals(expected.abs()));
     });
-    test('', (){
-
-      expect(, equals());
+    test('Negative true', (){
+      expect(a.negative, isTrue());
     });
-    test('', (){
+    test('Negative false', (){
 
-      expect(, equals());
+      expect(b.negative, isFalse());
     });
-    test('', (){
-
-      expect(, equals());
-    });
-
   });
-    
+  group('Lazy integrated addition', (){
+    test('lazy ADD', (){
+      AbsBase60 a = base_60_math.AbsBase60.from_commas('4,16;54');
+      AbsBase60 b = base_60_math.AbsBase60.from_commas('4,0;7');
+      AbsBase60 c = base_60_math.lazy_addition(a, b);
+      expect((c).toString(), equals('8,17;1'));
+      expect((c).toString(), base_60_math.lazy_addition(b, a).toString());
+    });
+    test('lazy add inverse', (){
+      int_ = 6 + 437
+      AbsBase60 a = base_60_math.AbsBase60.from_integer(6);
+      AbsBase60 b = base_60_math.AbsBase60.from_integer(437);
+      expected = base_60_math.AbsBase60.from_integer(int_);
+      expect(base_60_math.lazy_addition(a, b) == base_60_math.lazy_addition(b, a), true);
+    });
+    test('lazy add int', (){
+      int int_ = 6 + 437;
+      AbsBase60 a = base_60_math.AbsBase60.from_integer(6);
+      AbsBase60 b = base_60_math.AbsBase60.from_integer(437);
+      AbsBase60 expected = base_60_math.AbsBase60.from_integer(int_);
+      expect(base_60_math.lazy_addition(a, b), equals(expected));
+    });
+  });
+// -----------------------------------------------------------------------------
+  group(comparator, () => null)
 
-
-
-
-
-
-
-  def test_lazy_sub():
-  a = base_60_math.lazy_subtraction(base_60_math.Base60.from_commas('4,16;18'),
-  base_60_math.Base60.from_commas('1,12;6'))
-  b = base_60_math.lazy_subtraction(base_60_math.Base60.from_commas('1,12;6'),
-  base_60_math.Base60.from_commas('4,16;18'))
-  expected = base_60_math.Base60.from_commas('3,4;12')
-  assert str(a) == str(expected)
-  assert str(b) == str(expected)
-  assert a.negative is False
-  assert b.negative is True
-
-
-  def test_lazy_add():
-  a = base_60_math.AbsBase60.from_commas('4,16;54')
-  b = base_60_math.AbsBase60.from_commas('4,0;7')
-  c = base_60_math.lazy_addition(a, b)
-  assert str(c) == str('8,17;1')
-  assert str(c) == str(base_60_math.lazy_addition(b, a))
-
-
-  def test_lazy_add_int():
-  int_ = 6 + 437
-  a = base_60_math.AbsBase60.from_integer(6)
-  b = base_60_math.AbsBase60.from_integer(437)
-  expected = base_60_math.AbsBase60.from_integer(int_)
-  assert base_60_math.lazy_addition(a, b) == base_60_math.lazy_addition(b, a)
-  assert base_60_math.lazy_addition(a, b) == expected
 
 
   //////////////////////////////
-  def test_base60_str():
-  a = base_60_math.Base60.from_commas('3,4;12')
-  assert str(a) == '3,4;12'
+
 
 
   def test_comparator_truthy():
