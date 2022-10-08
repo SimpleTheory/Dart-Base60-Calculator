@@ -32,7 +32,7 @@ void main() {
     });
   });
 // -----------------------------------------------------------------------------
-  group('2nd step integrated arthmetic functions', (){
+  group('2nd step integrated arthmetic functions ADDITION', (){
     test('add items in base number list (base60)', (){
       Base60 a = base_60_math.Base60.from_commas('1,2,3,4,5');
       Base60 b = base_60_math.Base60.from_commas('59,59,3,5');
@@ -48,61 +48,74 @@ void main() {
     });
     test('add items in base number list (base60) 2', (){
       List<int> a = [7,17];
-      List<int> b = [23];
+      List<int> b = [6];
       expect(listEquals(
           base_60_math.add_items_in_list_number(a, b), [7, 23]), isTrue);
       expect(listEquals(
           base_60_math.add_items_in_list_number(b, a), [7, 23]), isTrue);
     });
+    test('add items in a list fraction', (){
+      expect(base_60_add_items_in_list_fraction([30, 40, 20], [5, 5, 40])),
+      equals([[35, 46, 0], 0]);
+    });
+    test('add items in a list fraction carryover', (){
+      AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
+      AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
+      List<int> c = base_60_math.add_items_in_list_fraction(a.number, b.number);
+      // [59,59,3, 5, 0]
+      // [1, 2, 3, 4, 5]
+      //1[1, 1, 6, 9, 5]
 
-
+      expect(c, equals([[1, 1, 6, 9, 5], 1]);
+    });
   });
+    group('2nd step integrated arthmitetic SUB', (){
+      test('', (){
+        AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
+        AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
+        List<int> c = base_60_math.subtract_number(a.number, b.number);
+        // [0, 59, 59, 3, 5]
+        // [1, 2, 3, 4, 5]
+        // [2, 2, 2, 7,10]
+        expect(c, equals([2, 4, 1, 0]));
+      });
+      test('Subtract to 0', (){
+        expect(base_60_math.subtract_number([59, 59, 59, 59], [59, 59, 59, 59]),
+            equals([0]));
+      });
+      test('Subtract fraction', (){
+        // 30 40 20
+        //  5  5 40
+        // 25 34 40
+        expect(base_60_math.subtract_fraction([30, 40, 20], [5, 5, 40]),
+            equals([[25, 34, 40], 0]));
+      });
 
+      test('Subtract Fraction Carryover', (){
+        List a = base_60_math.subtract_fraction([5, 5, 40], [30, 40, 20]);
+        expect(a ,equals([[25, 34, 40], -1]));
+      });
 
+      test('', (){
 
-  def test_add_items_in_list_number2():
-  a = [7, 17]
-  b = [6]
-  assert base_60_math.add_items_in_list_number(a, b) == [7, 23]
-  assert base_60_math.add_items_in_list_number(b, a) == [7, 23]
+        expect(, equals());
+      });
+      test('', (){
 
-
-  def test_add_items_in_list_fraction():
-  assert base_60_math.add_items_in_list_fraction([30, 40, 20], [5, 5, 40]) == ([35, 46, 0], 0,)
-
-  a = base_60_math.Base60.from_commas('1,2,3,4,5')
-  b = base_60_math.Base60.from_commas('59,59,3,5')
-  c = base_60_math.add_items_in_list_fraction(a.number, b.number)
-  # [59,59,3, 5, 0]
-  # [1, 2, 3, 4, 5]
-  # 1[1, 1, 6, 9, 5]
-  assert c == ([1, 1, 6, 9, 5], 1,)
-
-
-  def test_subtraction_number():
-  a = base_60_math.Base60.from_commas('1,2,3,4,5')
-  b = base_60_math.Base60.from_commas('59,59,3,5')
-  c = base_60_math.subtract_number(a.number, b.number)
-  # [0, 59, 59, 3, 5]
-  # [1, 2, 3, 4, 5]
-  # [2, 2, 2, 7,10]
-  assert c == [2, 4, 1, 0]
-  assert base_60_math.subtract_number([59, 59, 59, 59], [59, 59, 59, 59]) == [0]
-
+        expect(, equals());
+      });
+    });
+    
 
   def test_subtraction_fraction():
-  # 30 40 20
-  # 5 5 40
-  # 25 34 40
-  assert base_60_math.subtract_fraction([30, 40, 20], [5, 5, 40]) == ([25, 34, 40], 0,)
-  assert base_60_math.subtract_fraction([5, 5, 40], [30, 40, 20]) == ([25, 34, 40], -1,)
+
 
   a = base_60_math.Base60.from_commas('1,2,3,4,5')
   b = base_60_math.Base60.from_commas('59,59,3,5')
   c = base_60_math.subtract_fraction(a.number, b.number)
-  # [59,59,3, 5, 0]e
-  # [1, 2, 3, 4, 5]
-  # 1[1, 1, 6, 9, 5]
+  // [59,59,3, 5, 0]e
+  // [1, 2, 3, 4, 5]
+  // 1[1, 1, 6, 9, 5]
   assert c == ([58, 57, 0, 0, 55], -1,)
 
 
@@ -135,7 +148,7 @@ void main() {
   assert base_60_math.lazy_addition(a, b) == expected
 
 
-  ###############
+  //////////////////////////////
   def test_base60_str():
   a = base_60_math.Base60.from_commas('3,4;12')
   assert str(a) == '3,4;12'
@@ -229,9 +242,7 @@ void main() {
   a = base_60_math.AbsBase60.from_commas('2;30')
   b = base_60_math.AbsBase60.from_commas('1;30')
   c = base_60_math.lazy_division(a, b)
-  assert c == base_60_math.AbsBase60.from_commas('1;40
-  '
-  )
+  assert c == base_60_math.AbsBase60.from_commas('1;40')
 
 
 }
