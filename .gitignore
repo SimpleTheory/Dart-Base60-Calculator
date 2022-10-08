@@ -45,3 +45,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+*.py
+/test/trying_things_out.dart
+/test/trying_things_out.dart
