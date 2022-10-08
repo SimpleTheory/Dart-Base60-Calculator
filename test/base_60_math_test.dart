@@ -6,6 +6,7 @@ import '';
 
 //generic
 List<T> reverse<T>(List<T> x) => List<T>.from(x.reversed);
+List<T> sorted<T>(List<T> x){List<T> y = List.from(x); y.sort(); return y}
 
 
 void main() {
@@ -26,6 +27,10 @@ void main() {
     });
     test('base add 2', (){
       expect(base_60_math.base60_unit_subtraction(5, 4), equals([1, 0]));
+    });
+    test('int to base', (){
+      List<int> a = base_60_math.int_to_base(478, 60);
+      expect(a, [7, 58]);
     });
   });
 // -----------------------------------------------------------------------------
@@ -92,6 +97,7 @@ void main() {
         expect(c, equals([[58, 57, 0, 0, 55], -1]));
       });
     });
+// -----------------------------------------------------------------------------
   group('Lazy integrated arthmetic SUB', (){
     Base60 a = base_60_math.lazy_subtraction(base_60_math.Base60.from_commas('4,16;18'),
                                               base_60_math.Base60.from_commas('1,12;6'));
@@ -159,7 +165,26 @@ void main() {
       List<int> b = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], false);
       expect(b, [[1, 2, 1, 1], [1, 1, 0, 0]]);
     });
+    test('prepcompare reverse', (){
+      List<int> a = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], true);
+      List<int> b = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], false);
+      expect(base_60_math.prep_compare([1, 2, 1, 1], [1, 1], true, true), a.map(<T>(e) => reverse(e)).toList());
+      expect(base_60_math.prep_compare([1, 2, 1, 1], [1, 1], false, true), b.map(<T>(e) => reverse(e)).toList());
+    });
+  });
+  group('sort, formatting and other', () {
+    test('AbsBase60 sort', () {
+      List<AbsBase60> init_ = [661, 409, 7236, 1976, 2764].map((e) => base_60_math.AbsBase60.from_int(e)).toList();
+      List<AbsBase60> final_ = sorted([661, 409, 7236, 1976, 2764]).map((e)=> base_60_math.AbsBase60.from_integer(e)).toList();
+      expect(base_60_math.sort(init_), final_);
 
+    });
+    test('', () {
+
+    });
+    test('', (){
+
+    });
     test('', (){
 
     });
@@ -178,54 +203,9 @@ void main() {
 
   //////////////////////////////
 
-  def test_prep_compare():
-
-
-  expect(base_60_math.prep_compare([1, 2, 1, 1], [1, 1], true, true), tuple([reverse(i) for i in a])
-  expect(base_60_math.prep_compare([1, 2, 1, 1], [1, 1], false, true), tuple([reverse(i) for i in b])
-
-
-  def test_int_to_base():
-  List<int> a = base_60_math.int_to_base(478, 60)
-  expect(a, [7, 58]
-
-
-  def test_sort():
-  List<AbsBase60> init_ = [base_60_math.AbsBase60.from_integer(i) for i in [661, 409, 7236, 1976, 2764]]
-  List<AbsBase60> final = [base_60_math.AbsBase60.from_integer(i) for i in sorted([661, 409, 7236, 1976, 2764])]
-  expect(base_60_math.sort(init_), final
-
-
   def test_remove_0s_from_end():
   expect(base_60_math.remove_0s_from_end([23, 0, 0, 43, 4, 0, 0]), [23, 0, 0, 43, 4]
   expect(base_60_math.remove_0s_from_end([0]), []
-
-
-  def test_wholenumberizer():
-  AbsBase60 a = base_60_math.AbsBase60.from_commas('4,16;54,8,0')
-  List<intb = a.wholenumberize()
-  expect(b.number, [4, 16, 54, 8]
-  expect(b.seximals, 2
-
-
-  def test_wholenumberizer_reverse():
-  AbsBase60 a = base_60_math.AbsBase60.from_commas('4,16;54,8,0')
-  WholeNumberBase60 b = a.wholenumberize(true)
-  expect(b.number, reverse([4, 16, 54, 8]) and b.reversed is true
-
-
-  def test_wholenumber_self_reverse():
-  AbsBase60 a = base_60_math.AbsBase60.from_commas('4,16;54,8,0')
-  b = a.wholenumberize(true)
-  b.toggle_reverse()
-  expect(b.number, [4, 16, 54, 8] and b.reversed is false
-
-
-  def test_wholenumber_int():
-  a = base_60_math.WholeBase60Number([1, 1, 6], 0)
-  b = base_60_math.WholeBase60Number([1, 1, 6], 0)
-  expect(int(a), 3666
-  expect(int(b), 3666
 
 
   def test_inverse():
@@ -237,13 +217,6 @@ void main() {
   a = base_60_math.carry_over_reformat_base([43, 108, 70, 67, 23, 137])
   expect(base_60_math.carry_over_reformat_base([60, 59, 59, 59, 59]), [0, 0, 0, 0, 0, 1]
   expect(a, [43, 48, 11, 8, 24, 17, 2]
-
-
-  def test_wholenumber_to_abs():
-  a = base_60_math.AbsBase60.from_commas('4,16;54,8,0')
-  b = a.wholenumberize().to_Abs60()
-  expect(b, a
-
 
   def test_divide():
   a = base_60_math.AbsBase60.from_commas('2;30')
