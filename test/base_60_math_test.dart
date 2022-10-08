@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/foundation.dart';
 import 'package:quiver/collection.dart';
 import 'package:test/test.dart';
@@ -44,7 +42,7 @@ void main() {
     });
     test('add items in base number list (base60): carryover', (){
       expect((listEquals(base_60_math.add_items_in_list_number(
-          [59, 59, 59, 59], [59, 59, 59, 59]), [1, 59, 59, 59, 58]), isTrue);
+          [59, 59, 59, 59], [59, 59, 59, 59]), [1, 59, 59, 59, 58]), isTrue));
     });
     test('add items in base number list (base60) 2', (){
       List<int> a = [7,17];
@@ -66,19 +64,10 @@ void main() {
       // [1, 2, 3, 4, 5]
       //1[1, 1, 6, 9, 5]
 
-      expect(c, equals([[1, 1, 6, 9, 5], 1]);
+      expect(c, equals([[1, 1, 6, 9, 5], 1]));
     });
   });
-    group('2nd step integrated arthmitetic SUB', (){
-      test('', (){
-        AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
-        AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
-        List<int> c = base_60_math.subtract_number(a.number, b.number);
-        // [0, 59, 59, 3, 5]
-        // [1, 2, 3, 4, 5]
-        // [2, 2, 2, 7,10]
-        expect(c, equals([2, 4, 1, 0]));
-      });
+  group('2nd step integrated arthmitetic SUB', (){
       test('Subtract to 0', (){
         expect(base_60_math.subtract_number([59, 59, 59, 59], [59, 59, 59, 59]),
             equals([0]));
@@ -90,33 +79,49 @@ void main() {
         expect(base_60_math.subtract_fraction([30, 40, 20], [5, 5, 40]),
             equals([[25, 34, 40], 0]));
       });
-
       test('Subtract Fraction Carryover', (){
         List a = base_60_math.subtract_fraction([5, 5, 40], [30, 40, 20]);
         expect(a ,equals([[25, 34, 40], -1]));
       });
-
-      test('', (){
-
-        expect(, equals());
-      });
-      test('', (){
-
-        expect(, equals());
+      test('subtract fraction carry over 2', (){
+        Base60 a = base_60_math.Base60.from_commas('1,2,3,4,5');
+        Base60 b = base_60_math.Base60.from_commas('59,59,3,5');
+        List c = base_60_math.subtract_fraction(a.number, b.number);
+        // [59,59,3, 5, 0]e
+        // [1, 2, 3, 4, 5]
+        // 1[1, 1, 6, 9, 5]
+        expect(c, equals([[58, 57, 0, 0, 55], -1]));
       });
     });
+  group('Lazy integrated arthmetic', (){
+    test('', (){
+
+      expect(, equals());
+    });
+    test('', (){
+
+      expect(, equals());
+    });
+    test('', (){
+
+      expect(, equals());
+    });
+    test('', (){
+
+      expect(, equals());
+    });
+    test('', (){
+
+      expect(, equals());
+    });
+
+  });
     
 
-  def test_subtraction_fraction():
 
 
-  a = base_60_math.Base60.from_commas('1,2,3,4,5')
-  b = base_60_math.Base60.from_commas('59,59,3,5')
-  c = base_60_math.subtract_fraction(a.number, b.number)
-  // [59,59,3, 5, 0]e
-  // [1, 2, 3, 4, 5]
-  // 1[1, 1, 6, 9, 5]
-  assert c == ([58, 57, 0, 0, 55], -1,)
+
+
 
 
   def test_lazy_sub():
