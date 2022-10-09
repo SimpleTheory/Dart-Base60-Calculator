@@ -14,6 +14,7 @@ List<int> range(int stop, {int? start, int? step}){
 List<T> reverse<T>(List<T> x) => List<T>.from(x.reversed);
 List<T> sorted<T>(List<T> x){List<T> y = List.from(x); y.sort(); return y;}
 extension NumExtensions on num {bool get isInt => (this % 1) == 0;}
+extension IntExtensions on int {bool get isPositive => this > 0;}
 
 // generate tab  --->  ctrl + shift + g
 // KMS--------------------------------------------------------------------------
@@ -25,7 +26,8 @@ AbsBase60 absolute(val){
   else {throw TypeError();}
 }
 // Copy args got snapped because lack of primitives reeeeeeeee
-// ------------------------------------------------------------------------------
+
+// Classes ---------------------------------------------------------------------
 class AbsBase60{
   late List<int> number;
   late List<int> fraction;
@@ -265,7 +267,28 @@ class WholeBase60Number{
 
 }
 
-
+// Unit Math -------------------------------------------------------------------
+    // <editor-fold desc="add, sub, euclidean division">
+List<int> euclidean_division(int dividend, int divisor){
+  int quotient = dividend ~/ divisor;
+  int mod = dividend % divisor;
+  return [quotient, mod];
+}
+List<int> base60_unit_addition(int n1, int n2){
+  int temp = n1 + n2;
+  List<int> r = euclidean_division(60, temp);
+  return reverse(r);
+}
+List<int> base60_unit_subtraction(int subtractor, int subtractee){
+  int holdover = 0;
+  while(subtractee < subtractor){
+    subtractee += 60;
+    holdover -= 1;}
+  return [(subtractee - subtractor), holdover];
+}
+// </editor-fold>
+// Formatting ------------------------------------------------------------------
+    // <editor-fold desc="remove0s, carryover reformat, prep compare">
 List<int> remove0sFromEnd(List<int>? val, {bool end=true}){
   if (val==null){return [];}
   if (val.isEmpty){return [];}
@@ -277,7 +300,6 @@ List<int> remove0sFromEnd(List<int>? val, {bool end=true}){
   if (end) {return reverse(newList);}
   else{return newList;}
 }
-
 List<int> carry_over_reformat_base(List<int> ls){
   if (ls.where((element) => e >= 60).isNotEmpty){
     int carryOver = 0;
@@ -298,3 +320,33 @@ List<int> carry_over_reformat_base(List<int> ls){
   }
   return ls;
 }
+List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, reversed=false}){
+  List<int> rl1 = List.from(l1);
+  List<int> rl2 = List.from(l2);
+  int lenDiff = rl1.length - rl2.length;
+  int absLenDiff = lenDiff.abs();
+  if (number){
+    if (lenDiff.isPositive){
+      rl2 = range(absLenDiff).map((e) => 0).toList() + rl2;
+    }
+    else if(lenDiff.isNegative){
+      rl1 = range(absLenDiff).map((e) => 0).toList() + rl1;
+    }
+  }
+  else{
+    if (lenDiff.isPositive){
+      rl2 = rl2 + range(absLenDiff).map((e) => 0).toList();
+    }
+    else if(lenDiff.isNegative){
+      rl1 = rl1 + range(absLenDiff).map((e) => 0).toList();
+    }
+  }
+  if (reversed){
+    rl1 = reverse(rl1);
+    rl2 = reverse(rl2);
+  }
+  return [rl1, rl2];
+
+}
+// </editor-fold>
+// Comparison ------------------------------------------------------------------
