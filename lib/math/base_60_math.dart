@@ -19,7 +19,7 @@ extension NumExtensions on num {bool get isInt => (this % 1) == 0;}
 // KMS--------------------------------------------------------------------------
 AbsBase60 absolute(val){
   if (val is AbsBase60){return val;}
-  else if(val is int){return AbsBase60.from_int(val);}
+  else if(val is int){return AbsBase60.from_integer(val);}
   else if(val is double){return AbsBase60.from_double(val);}
   else if(val is Base60){return val.abs();}
   else {throw TypeError();}
@@ -65,7 +65,7 @@ class AbsBase60{
       fraction: map['fraction'] as List<int>,
     );
   }
-//</editor-fold>
+  //</editor-fold>
 
   //<editor-fold desc="Constructors">
   AbsBase60.from_commas(String commas){
@@ -88,21 +88,27 @@ class AbsBase60{
   }
   AbsBase60.zero(){number=[0]; fraction=[];}
   AbsBase60.from_integer(int int){number = int_to_base(int, 60); fraction=[];}
-  AbsBase60.from_double(double double){
+  factory AbsBase60.from_double(double double){
     for (num i in range(101)){
       num currentAnswer = double * pow(60, i);
       if (currentAnswer.isInt){
-        WholeBase60Number(
-            AbsBase60.from_integer(currentAnswer.toInt()).number, i, true).to_Abs60();
+        return WholeBase60Number(
+            number: AbsBase60.from_integer(currentAnswer.toInt()).number,
+            seximals: i.toInt(),
+            reversed: true).toAbs60();
       }
-
     }
+    int timetoround = (double * pow(60, 101)).round();
+    return WholeBase60Number(
+        number: AbsBase60.from_integer(timetoround).number,
+        seximals: 101,
+        reversed: true).toAbs60().round();
   }
 
-//</editor-fold>
+  //</editor-fold>
 
   //<editor-fold desc="Methods">
-// toInt toFloat isInt isFloat round wholenumberize
+  // toInt toFloat isInt isFloat round wholenumberize
   bool isInt(){
     if (fraction.isEmpty){return true;}
     else{
@@ -130,10 +136,20 @@ class AbsBase60{
   }
   WholeBase60Number wholenumberizer({reverse_ = false}){
     List<int> frac = remove0sFromEnd(fraction);
-    return WholeBase60Number(number + frac, frac.length, reverse: reverse_);
+    return WholeBase60Number(
+        number: number + frac,
+        seximals: frac.length,
+        reversed: reverse_);
+  }
+  AbsBase60 round(){
+    WholeBase60Number x = wholenumberizer(reverse_: true);
+    x.number[0] = 60;
+    x.number = carry_over_reformat_base(x.number);
+    return x.toAbs60();
+
   }
 
-//</editor-fold>
+  //</editor-fold>
 
   //<editor-fold desc="Operators">
 //TODO: I'll get to this when I have implemented the rest
@@ -159,7 +175,8 @@ class WholeBase60Number{
     required this.number,
     required this.seximals,
     this.reversed=false,
-  });
+  })
+  {if (reversed){number=reverse(number);}}
 
   @override
   bool operator ==(Object other) =>
@@ -203,7 +220,8 @@ class WholeBase60Number{
     );
   }
 
-//</editor-fold>
+  //</editor-fold>
+
   //<editor-fold desc="Methods">
   void toggleReverse(){
     number = reverse(number);
@@ -221,8 +239,10 @@ class WholeBase60Number{
 
     if(self.seximals==self.number.length)
       {return AbsBase60(number: [], fraction: reverse(self.number));}
+
     else if(self.seximals==0){
       return AbsBase60(number: reverse(self.number), fraction: []);}
+
     else {
       List<int> frac = self.number.sublist(0, seximals + 1);
       frac = remove0sFromEnd(frac);
@@ -233,19 +253,48 @@ class WholeBase60Number{
     }
 
   }
+  int toInt(){
+    WholeBase60Number self = copyWith();
+    self.reverseSelf();
+    return self.number.mapIndexed(
+            (index, element) => element * pow(60, index)
+    ).toList().sum.toInt();
+  }
 //</editor-fold>
 
 
 }
 
 
-
-remove0sFromEnd(List<int>? val, {bool end=true}){
+List<int> remove0sFromEnd(List<int>? val, {bool end=true}){
   if (val==null){return [];}
   if (val.isEmpty){return [];}
   List<int> newList = List.from(val);
-  while(newList[0]==)
-
-
+  if (end){newList = reverse(newList);}
+  while(newList[0]==0){
+    newList = newList.sublist(1);
+    if (newList.isEmpty){return [];}}
+  if (end) {return reverse(newList);}
+  else{return newList;}
 }
 
+List<int> carry_over_reformat_base(List<int> ls){
+  if (ls.where((element) => e >= 60).isNotEmpty){
+    int carryOver = 0;
+    List<int> temp_ls = [];
+
+    for (int v in ls){
+      v += carryOver;
+      carryOver = 0;
+      while (v>=60){
+        carryOver += 1;
+        v -= 60;
+      }
+      temp_ls.add(v);
+    }
+    if (carryOver>0){temp_ls.add(carryOver);}
+
+    return temp_ls;
+  }
+  return ls;
+}

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:quiver/collection.dart';
 import 'package:test/test.dart';
-import '';
+import '../lib/math/base_60_math.dart' as base_60_math;
 //try copywith & copy constructor or methods
 
 //generic
