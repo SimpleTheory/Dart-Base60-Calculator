@@ -69,10 +69,11 @@ class AbsBase60{
     commas.trim();
     if (commas.contains(';')){
       List<String> commasSplit = commas.split(';');
-      number = commasSplit.isEmpty ? [] :
+      number = commasSplit[0].isEmpty ? [] :
                commasSplit[0].split(',').map((e) => int.parse(e)).toList();
 
       fraction = commasSplit[1].split(',').map((e) => int.parse(e)).toList();
+      print('number $number | fraction $fraction');
       for (int i in number+fraction)
         {if (i>=60)
           {throw ArgumentError('OverbaseError $commas');}}
@@ -93,7 +94,7 @@ class AbsBase60{
         return WholeBase60Number(
             number: AbsBase60.from_integer(currentAnswer.toInt()).number,
             seximals: i.toInt(),
-            reversed: true).toAbs60();
+            reversed: false).toAbs60();
       }
     }
     int timetoround = (double * pow(60, 101)).round();
@@ -283,13 +284,23 @@ class WholeBase60Number{
     else if(self.seximals==0){
       return AbsBase60(number: reverse(self.number), fraction: []);}
 
-    else {
-      List<int> frac = self.number.sublist(0, seximals);
-      frac = remove0sFromEnd(frac);
-      frac = reverse(frac);
-      List<int> num = self.number.sublist(seximals);
-      num = reverse(num);
-      return AbsBase60(number: num, fraction: frac);
+    else if(seximals==1){
+      List<int> num_ = self.number.sublist(0, seximals+1);
+      num_ = remove0sFromEnd(num_);
+      // num_ = reverse(num_);
+      List<int> frac = self.number.sublist(seximals+1);
+      // frac = reverse(frac);
+      print('num_ $num_ frac $frac seximals $seximals');
+      return AbsBase60(number: num_, fraction: frac);
+    }
+    else{
+      List<int> num_ = self.number.sublist(0, seximals);
+      num_ = remove0sFromEnd(num_);
+      // num_ = reverse(num_);
+      List<int> frac = self.number.sublist(seximals);
+      // frac = reverse(frac);
+      print('num_ $num_ frac $frac seximals $seximals NOT 1');
+      return AbsBase60(number: num_, fraction: frac);
     }
 
   }
