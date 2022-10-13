@@ -15,6 +15,15 @@ List<int> range(int stop, {int? start, int? step}){
 }
 List<T> reverse<T>(List<T> x) => List<T>.from(x.reversed);
 List<T> sorted<T>(List<T> x){List<T> y = List.from(x); y.sort(); return y;}
+List<List<E>> splitBeforeIndex<E>(List<E> og_list, int index){
+  while (index<0){index += og_list.length; }
+  List<List<E>> newList = [[],[]];
+  for (int i in range(og_list.length)){
+    if (i>=index){newList[1].add(og_list[i]);}
+    else {newList[0].add(og_list[i]);}
+  }
+  return newList;
+}
 extension NumExtensions on num {bool get isInt => (this % 1) == 0;}
 extension IntExtensions on int {bool get isPositive => this > 0;}
 //</editor-fold>
@@ -73,7 +82,6 @@ class AbsBase60{
                commasSplit[0].split(',').map((e) => int.parse(e)).toList();
 
       fraction = commasSplit[1].split(',').map((e) => int.parse(e)).toList();
-      print('number $number | fraction $fraction');
       for (int i in number+fraction)
         {if (i>=60)
           {throw ArgumentError('OverbaseError $commas');}}
@@ -274,35 +282,39 @@ class WholeBase60Number{
   void unReverse(){
     if (reversed){toggleReverse();}
   }
+  // AbsBase60 toAbs60(){
+  //   WholeBase60Number self = copyWith();
+  //   self.unReverse();
+  //
+  //   if(self.seximals==self.number.length)
+  //     {print('eq___');
+  //     return AbsBase60(number: [], fraction: reverse(self.number));}
+  //
+  //   else if(self.seximals==0){print('not sexy');
+  //     return AbsBase60(number: self.number, fraction: []);}
+  //
+  //   else{
+  //     print(self);
+  //     List<int> num_ = self.number.sublist(0, seximals);
+  //     num_ = remove0sFromEnd(num_);
+  //     // num_ = reverse(num_);
+  //     List<int> frac = self.number.sublist(seximals);
+  //     // frac = reverse(frac);
+  //     // print('num_ $num_ frac $frac seximals $seximals NOT 1');
+  //     return AbsBase60(number: num_, fraction: frac);
+  //   }
+  //
+  // }
   AbsBase60 toAbs60(){
+    print(this);
+    print('sexi $seximals');
     WholeBase60Number self = copyWith();
     self.unReverse();
+    if (seximals==0){return AbsBase60(number: self.number, fraction: []);}
 
-    if(self.seximals==self.number.length)
-      {return AbsBase60(number: [], fraction: reverse(self.number));}
-
-    else if(self.seximals==0){
-      return AbsBase60(number: reverse(self.number), fraction: []);}
-
-    else if(seximals==1){
-      List<int> num_ = self.number.sublist(0, seximals+1);
-      num_ = remove0sFromEnd(num_);
-      // num_ = reverse(num_);
-      List<int> frac = self.number.sublist(seximals+1);
-      // frac = reverse(frac);
-      print('num_ $num_ frac $frac seximals $seximals');
-      return AbsBase60(number: num_, fraction: frac);
-    }
-    else{
-      List<int> num_ = self.number.sublist(0, seximals);
-      num_ = remove0sFromEnd(num_);
-      // num_ = reverse(num_);
-      List<int> frac = self.number.sublist(seximals);
-      // frac = reverse(frac);
-      print('num_ $num_ frac $frac seximals $seximals NOT 1');
-      return AbsBase60(number: num_, fraction: frac);
-    }
-
+    List<List<int>> number_frac = splitBeforeIndex(self.number, seximals*-1);
+    print(number_frac);
+    return AbsBase60(number: number_frac[0], fraction: remove0sFromEnd(number_frac[1]));
   }
   int toInt(){
     WholeBase60Number self = copyWith();
@@ -350,7 +362,8 @@ List<int> remove0sFromEnd(List<int>? val, {bool end=true}){
   else{return newList;}
 }
 List<int> carry_over_reformat_base(List<int> ls){
-  if (ls.where((element) => e >= 60).isNotEmpty){
+  print('hi');
+  if (ls.max >= 60){
     int carryOver = 0;
     List<int> temp_ls = [];
 
@@ -365,9 +378,9 @@ List<int> carry_over_reformat_base(List<int> ls){
     }
     if (carryOver>0){temp_ls.add(carryOver);}
 
-    return temp_ls;
+    return reverse(temp_ls);
   }
-  return ls;
+  return reverse(ls);
 }
 List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool reversed=false}){
   List<int> rl1 = List.from(l1);

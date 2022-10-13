@@ -77,8 +77,10 @@ void main() {
 
     test('abs round', (){
       base_60_math.AbsBase60  c1 = base_60_math.AbsBase60.from_commas('2;59,59,59,59,30').round();
+      print(c1);
       expect(c1, equals(base_60_math.AbsBase60.from_integer(3)));
     });
+
     test('abs toString()', (){
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('3,4;12');
       expect(a.toString(), equals('3,4;12'));
@@ -110,9 +112,12 @@ void main() {
       expect(base_60_math.AbsBase60.from_double(1/3),
           equals(base_60_math.AbsBase60.from_commas(';20')));
     });
+    test('from commas ;0,0,1', () {
+      expect(base_60_math.AbsBase60.from_commas(';0,0,1')
+          .toString(),';0,0,1');
+    });
   });
-  group('WholeNumber', ()
-  {
+  group('WholeNumber', () {
     base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas(
         '4,16;54,8,0');
     test('wholenumberizer', () {
@@ -139,9 +144,12 @@ void main() {
       expect(a.toInt(), 3666);
       expect(b.toInt(), 3666);
     });
+  });
+  group('to Abs', (){
     test('wn to Abs60', () {
       b = a.wholenumberizer().toAbs60();
       a.fraction = base_60_math.remove0sFromEnd(a.fraction);
+      print(a);print(b);
       expect(b, a);
     });
     test('wn to Abs60 2', () {
@@ -155,6 +163,18 @@ void main() {
           .wholenumberizer()
           .toAbs60(),
           base_60_math.AbsBase60.from_commas('2,1,16;15,7,8'));
+    });
+    test('wn to Abs60 4', () {
+      expect(base_60_math.AbsBase60.from_commas('1;12')
+          .wholenumberizer()
+          .toAbs60(),
+          base_60_math.AbsBase60.from_commas('1;12'));
+    });
+    test('wn to Abs60 5', () {
+      expect(base_60_math.AbsBase60.from_commas(';0,0,1')
+          .wholenumberizer()
+          .toAbs60(),
+          base_60_math.AbsBase60.from_commas(';0,0,1'));
     });
   });
 }
