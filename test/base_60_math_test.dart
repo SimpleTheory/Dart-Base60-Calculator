@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:quiver/collection.dart';
 import 'package:test/test.dart';
-import '../lib/math/base_60_math.dart' as base_60_math;
+import 'package:sexigesimal_alpha/math/base_60_math.dart' as base_60_math;
 //try copywith & copy constructor or methods
 
 //generic
@@ -29,16 +28,16 @@ void main() {
       expect(base_60_math.base60_unit_subtraction(5, 4), equals([1, 0]));
     });
     test('int to base', (){
-      List<int> a = base_60_math.int_to_base(478, 60);
+      List<int> a = base_60_math.intToBase(478, 60);
       expect(a, [7, 58]);
     });
   });
 // -----------------------------------------------------------------------------
   group('2nd step integrated arthmetic functions ADDITION', (){
     test('add items in base number list (base60)', (){
-      Base60 a = base_60_math.Base60.from_commas('1,2,3,4,5');
-      Base60 b = base_60_math.Base60.from_commas('59,59,3,5');
-      Base60 c = base_60_math.add_items_in_list_number(a.number, b.number);
+      base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
+      base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
+      base_60_math.AbsBase60 c = base_60_math.add_items_in_list_number(a.number, b.number);
       // [0, 59,59,3,  5]
       // [1, 2, 3, 4,  5]
       // [2, 2, 2, 7, 10]
@@ -61,8 +60,8 @@ void main() {
       equals([[35, 46, 0], 0]);
     });
     test('add items in a list fraction carryover', (){
-      AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
-      AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
+      base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
+      base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
       List<int> c = base_60_math.add_items_in_list_fraction(a.number, b.number);
       // [59,59,3, 5, 0]
       // [1, 2, 3, 4, 5]
@@ -71,6 +70,7 @@ void main() {
       expect(c, equals([[1, 1, 6, 9, 5], 1]));
     });
   });
+  //TODO take a look at this are reconvert to Base60 as opposed to AbsBase60
   group('2nd step integrated arthmitetic SUB', (){
       test('Subtract to 0', (){
         expect(base_60_math.subtract_number([59, 59, 59, 59], [59, 59, 59, 59]),
@@ -88,8 +88,8 @@ void main() {
         expect(a ,equals([[25, 34, 40], -1]));
       });
       test('subtract fraction carry over 2', (){
-        Base60 a = base_60_math.Base60.from_commas('1,2,3,4,5');
-        Base60 b = base_60_math.Base60.from_commas('59,59,3,5');
+        base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
+        base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
         List c = base_60_math.subtract_fraction(a.number, b.number);
         // [59,59,3, 5, 0]e
         // [1, 2, 3, 4, 5]
@@ -99,11 +99,11 @@ void main() {
     });
 // -----------------------------------------------------------------------------
   group('Lazy integrated arthmetic SUB', (){
-    Base60 a = base_60_math.lazy_subtraction(base_60_math.Base60.from_commas('4,16;18'),
-                                              base_60_math.Base60.from_commas('1,12;6'));
-    Base60 b = base_60_math.lazy_subtraction(base_60_math.Base60.from_commas('1,12;6'),
-                                      base_60_math.Base60.from_commas('4,16;18'));
-    Base60 expected = base_60_math.Base60.from_commas('3,4;12');
+    base_60_math.AbsBase60 a = base_60_math.lazy_subtraction(base_60_math.AbsBase60.from_commas('4,16;18'),
+                                              base_60_math.AbsBase60.from_commas('1,12;6'));
+    base_60_math.AbsBase60 b = base_60_math.lazy_subtraction(base_60_math.AbsBase60.from_commas('1,12;6'),
+                                      base_60_math.AbsBase60.from_commas('4,16;18'));
+    base_60_math.AbsBase60 expected = base_60_math.AbsBase60.from_commas('3,4;12');
     test('Calc a worked', (){
 
       expect(a, equals(expected));
@@ -122,73 +122,81 @@ void main() {
   });
   group('Lazy integrated addition', (){
     test('lazy ADD', (){
-      AbsBase60 a = base_60_math.AbsBase60.from_commas('4,16;54');
-      AbsBase60 b = base_60_math.AbsBase60.from_commas('4,0;7');
-      AbsBase60 c = base_60_math.lazy_addition(a, b);
+      base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('4,16;54');
+      base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('4,0;7');
+      base_60_math.AbsBase60 c = base_60_math.lazy_addition(a, b);
       expect((c).toString(), equals('8,17;1'));
       expect((c).toString(), base_60_math.lazy_addition(b, a).toString());
     });
     test('lazy add inverse', (){
-      int_ = 6 + 437
-      AbsBase60 a = base_60_math.AbsBase60.from_integer(6);
-      AbsBase60 b = base_60_math.AbsBase60.from_integer(437);
-      expected = base_60_math.AbsBase60.from_integer(int_);
+      base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_integer(6);
+      base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_integer(437);
       expect(base_60_math.lazy_addition(a, b), base_60_math.lazy_addition(b, a));
     });
     test('lazy add int', (){
       int int_ = 6 + 437;
-      AbsBase60 a = base_60_math.AbsBase60.from_integer(6);
-      AbsBase60 b = base_60_math.AbsBase60.from_integer(437);
-      AbsBase60 expected = base_60_math.AbsBase60.from_integer(int_);
+      base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_integer(6);
+      base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_integer(437);
+      base_60_math.AbsBase60 expected = base_60_math.AbsBase60.from_integer(int_);
       expect(base_60_math.lazy_addition(a, b), equals(expected));
     });
   });
 // -----------------------------------------------------------------------------
   group('comparator', (){
     test('truthy', (){
-      expect(base_60_math.comparator([30, 27], [59]), [true, false]);
-      expect(base_60_math.comparator([30, 27], [19, 39]), [true, false]);
-      expect(base_60_math.comparator([30, 27], [30, 26]), [true, false]);
-      expect(base_60_math.comparator(reverse([20, 40, 30]), reverse([40, 5, 5]), true), [true, false]);
-      expect(base_60_math.comparator([30, 27], [30, 27]), [false, true]);
+      expect(base_60_math.comparator(
+          base_60_math.AbsBase60(number: [30, 27], fraction: []),
+          base_60_math.AbsBase60(number: [59], fraction: [])), 'gt');
+      expect(base_60_math.comparator([30, 27], [19, 39]), 'gt');
+      expect(base_60_math.comparator([30, 27], [30, 26]), 'gt');
+      expect(base_60_math.comparator(reverse([20, 40, 30]), reverse([40, 5, 5])), 'gt');
+      expect(base_60_math.comparator([30, 27], [30, 27]), 'eq');
     });
     test('falsey', (){
-      expect(base_60_math.comparator([59], [30, 27]), [false, false]);
-      expect(base_60_math.comparator([1, 59], [30, 27]), [false, false]);
-      expect(base_60_math.comparator([30, 26], [30, 27]), [false, false]);
+      expect(base_60_math.comparator([59], [30, 27]), 'lt');
+      expect(base_60_math.comparator([1, 59], [30, 27]), 'lt');
+      expect(base_60_math.comparator([30, 26], [30, 27]), 'lt');
+    });
+    test('comparator w/ abs number', (){
+      base_60_math.AbsBase60 a  = base_60_math.AbsBase60.from_commas('59');
+      base_60_math.AbsBase60 b  = base_60_math.AbsBase60.from_commas('38;12,9');
+      base_60_math.AbsBase60 c =  base_60_math.AbsBase60.from_commas(commas)
+
     });
     test('precompare frac', (){
-      List<int> a = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], true);
+      List<List<int>> a = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], number: true);
       expect(a, [[1, 2, 1, 1], [0, 0, 1, 1]]);
       });
     test('prepcompare int', (){
-      List<int> b = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], false);
+      List<List<int>> b = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], number: false);
       expect(b, [[1, 2, 1, 1], [1, 1, 0, 0]]);
     });
     test('prepcompare reverse', (){
-      List<int> a = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], true);
-      List<int> b = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], false);
-      expect(base_60_math.prep_compare([1, 2, 1, 1], [1, 1], true, true), a.map(<T>(e) => reverse(e)).toList());
-      expect(base_60_math.prep_compare([1, 2, 1, 1], [1, 1], false, true), b.map(<T>(e) => reverse(e)).toList());
+      List<List<int>> a = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], number: true);
+      List<List<int>> b = base_60_math.prep_compare([1, 2, 1, 1], [1, 1], number: false);
+      expect(base_60_math.prep_compare([1, 2, 1, 1], [1, 1], number: true, reversed: true), a.map(<T>(e) => reverse(e)).toList());
+      expect(base_60_math.prep_compare([1, 2, 1, 1], [1, 1], number: false, reversed: true), b.map(<T>(e) => reverse(e)).toList());
     });
   });
 
   group('sort, formatting and other', () {
     test('AbsBase60 sort', () {
-      List<AbsBase60> init_ = [661, 409, 7236, 1976, 2764].map((e) => base_60_math.AbsBase60.from_int(e)).toList();
-      List<AbsBase60> final_ = sorted([661, 409, 7236, 1976, 2764]).map((e)=> base_60_math.AbsBase60.from_integer(e)).toList();
+      List<base_60_math.AbsBase60> init_ = [661, 409, 7236, 1976, 2764].map((e)
+      => base_60_math.AbsBase60.from_integer(e)).toList();
+      List<base_60_math.AbsBase60> final_ = sorted([661, 409, 7236, 1976, 2764]).map((e)
+      => base_60_math.AbsBase60.from_integer(e)).toList();
       expect(base_60_math.sort(init_), final_);
 
     });
     test('remove 0s from end frac list', () {
-      expect(base_60_math.remove_0s_from_end([23, 0, 0, 43, 4, 0, 0]), [23, 0, 0, 43, 4]);
+      expect(base_60_math.remove0sFromEnd([23, 0, 0, 43, 4, 0, 0]), [23, 0, 0, 43, 4]);
     });
     test('remove 0s from end 0', (){
-      expect(base_60_math.remove_0s_from_end([0]), []);
+      expect(base_60_math.remove0sFromEnd([0]), []);
 
       });
     test('', (){
-      AbsBase60 a = base_60_math.inverse(base_60_math.AbsBase60.from_commas('2;30'));
+      base_60_math.AbsBase60 a = base_60_math.inverse(base_60_math.AbsBase60.from_commas('2;30'));
       expect(a, base_60_math.AbsBase60.from_commas(';24'));
     });
     test('carry over reformat', (){
@@ -198,9 +206,9 @@ void main() {
     });
 
     test('lazy division', (){
-      AbsBase60 a = base_60_math.AbsBase60.from_commas('2;30');
-      AbsBase60 b = base_60_math.AbsBase60.from_commas('1;30');
-      AbsBase60 c = base_60_math.lazy_division(a, b);
+      base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('2;30');
+      base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('1;30');
+      base_60_math.AbsBase60 c = base_60_math.lazy_division(a, b);
       expect(c, base_60_math.AbsBase60.from_commas('1;40'));
     });
   });

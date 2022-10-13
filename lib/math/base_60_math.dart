@@ -1,7 +1,9 @@
 // Imports
 import 'package:collection/collection.dart';
 import 'dart:math';
+
 // Meta-Utility ----------------------------------------------------------------
+  //<editor-fold desc="range, reverse, sorted, isInt, isPositive">
 List<int> range(int stop, {int? start, int? step}){
   step ??= 1;
   start ??= 0;
@@ -15,7 +17,7 @@ List<T> reverse<T>(List<T> x) => List<T>.from(x.reversed);
 List<T> sorted<T>(List<T> x){List<T> y = List.from(x); y.sort(); return y;}
 extension NumExtensions on num {bool get isInt => (this % 1) == 0;}
 extension IntExtensions on int {bool get isPositive => this > 0;}
-
+//</editor-fold>
 // generate tab  --->  ctrl + shift + g
 // KMS--------------------------------------------------------------------------
 AbsBase60 absolute(val){
@@ -34,14 +36,7 @@ class AbsBase60{
 
   //<editor-fold desc="Data Methods">
   AbsBase60({required this.number, required this.fraction,});
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          (other is AbsBase60 &&
-              runtimeType == other.runtimeType &&
-              number == other.number &&
-              fraction == other.fraction
-          );
+
   @override
   int get hashCode =>
       number.hashCode ^
@@ -57,8 +52,8 @@ class AbsBase60{
   }
   Map<String, dynamic> toMap() {
     return {
-      'number': this.number,
-      'fraction': this.fraction,
+      'number': number,
+      'fraction': fraction,
     };
   }
   factory AbsBase60.fromMap(Map<String, dynamic> map) {
@@ -89,7 +84,8 @@ class AbsBase60{
     }
   }
   AbsBase60.zero(){number=[0]; fraction=[];}
-  AbsBase60.from_integer(int int){number = int_to_base(int, 60); fraction=[];}
+  AbsBase60.from_integer(int int){number = intToBase(int, 60); fraction=[];}
+  AbsBase60.from_symbols(String symbols){} //TODO WHEN I HAVE FONT
   factory AbsBase60.from_double(double double){
     for (num i in range(101)){
       num currentAnswer = double * pow(60, i);
@@ -154,7 +150,49 @@ class AbsBase60{
   //</editor-fold>
 
   //<editor-fold desc="Operators">
-//TODO: I'll get to this when I have implemented the rest
+  static AbsBase60 convertOther(other){
+    if (other is Base60){return other.abs();}
+    else if (other is int){return AbsBase60.from_integer(other);}
+    else if (other is AbsBase60){return other;}
+    else if (other is double){return AbsBase60.from_double(other);}
+    else if (other is WholeBase60Number){return other.toAbs60();}
+    else if (other is String){
+      RegExp isCommas = RegExp('^\d{1,2}|^;');
+      if (isCommas.hasMatch(other)) {return AbsBase60.from_commas(other);}
+      else{return AbsBase60.from_symbols(other);}
+    }
+    else {throw ArgumentError('Other $other is an invalid type'
+        ' for Abs60 other operation, type = ${other.runtimeType}');}
+  }
+  bool operator >(other){
+    other = AbsBase60.convertOther(other);
+    String result = comparator(this, other);
+    if (result=='gt'){return true;}else{return false;}
+  }
+  bool operator <(other){
+    other = AbsBase60.convertOther(other);
+    String result = comparator(this, other);
+    if (result=='lt'){return true;}else{return false;}
+  }
+  bool operator >=(other){
+    other = AbsBase60.convertOther(other);
+    String result = comparator(this, other);
+    if (result=='gt'||result=='eq'){return true;}
+    else{return false;}
+  }
+  bool operator <=(other){
+    other = AbsBase60.convertOther(other);
+    String result = comparator(this, other);
+    if (result=='lt'||result=='eq'){return true;}
+    else{return false;}
+  }
+  @override
+  bool operator ==(other){
+      AbsBase60 other_ = AbsBase60.convertOther(other);
+      String result =  comparator(this, other_);
+      if (result=='eq'){return true;}
+      else{return false;}}
+  //TODO MATH OPERATORS
 
 //</editor-fold>
 
@@ -208,9 +246,9 @@ class WholeBase60Number{
 
   Map<String, dynamic> toMap() {
     return {
-      'number': this.number,
-      'seximals': this.seximals,
-      'reversed': this.reversed,
+      'number': number,
+      'seximals': seximals,
+      'reversed': reversed,
     };
   }
 
@@ -246,7 +284,7 @@ class WholeBase60Number{
       return AbsBase60(number: reverse(self.number), fraction: []);}
 
     else {
-      List<int> frac = self.number.sublist(0, seximals + 1);
+      List<int> frac = self.number.sublist(0, seximals);
       frac = remove0sFromEnd(frac);
       frac = reverse(frac);
       List<int> num = self.number.sublist(seximals);
@@ -320,7 +358,7 @@ List<int> carry_over_reformat_base(List<int> ls){
   }
   return ls;
 }
-List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, reversed=false}){
+List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool reversed=false}){
   List<int> rl1 = List.from(l1);
   List<int> rl2 = List.from(l2);
   int lenDiff = rl1.length - rl2.length;
@@ -350,3 +388,81 @@ List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, reve
 }
 // </editor-fold>
 // Comparison ------------------------------------------------------------------
+    //<editor-fold desc="comparator, returnMax">
+  String comparator(AbsBase60 self, AbsBase60 other){
+  List<List<int>> prepped_number = prep_compare(self.number, other.number);
+  List<List<int>> prepped_fraction = prep_compare(self.fraction, other.fraction);
+
+  List<int> prepped_self = prepped_number[0]+prepped_fraction[0];
+  List<int> prepped_other = prepped_number[1]+prepped_fraction[1];
+
+  for (int i in range(prepped_self.length)){
+    if (prepped_self[i] > prepped_other[i]){return 'gt';}
+    if (prepped_self[i] < prepped_other[i]){return 'lt';}
+  }
+  return 'eq';
+  }
+  AbsBase60 returnMax(AbsBase60 val1, AbsBase60 val2){
+    String result = comparator(val1, val2);
+    if (result=='eq' || result=='gt'){return val1;}
+    return val2;
+  }
+
+//</editor-fold>
+// Conversion and misc base math -----------------------------------------------
+List<int> intToBase(int integer, int base){
+  if (integer==0){return [0];}
+  List<int> answer = [];
+
+  /// quotient = quotient_mod[0]
+  /// modulus = quotient_mod[1]
+  recurse(int number){
+      List<int> quotient_mod = euclidean_division(number, base);
+      answer.insert(0, quotient_mod[1]);
+      if (quotient_mod[0] < base){
+          if (quotient_mod[0] > 0)
+              {answer.insert(0, quotient_mod[0]);}
+        return true;
+      }
+      recurse(quotient_mod[0]);
+  }
+
+  recurse(integer);
+  return answer;
+}
+// Addition
+
+// Subtraction
+
+// Multiplication
+
+// Division
+
+// Sort ------------------------------------------------------------------------
+
+partition(int firstIndex, int lastIndex, List nums_){
+  var pivotValues = nums_[lastIndex];
+  int indexSwapIterative = firstIndex;
+  for (int i in range(lastIndex, start: firstIndex)){
+    if (nums_[i] <= pivotValues){
+      var temp = nums_[i];
+      nums_[i]=nums_[indexSwapIterative];
+      nums_[indexSwapIterative] = temp;
+    }
+  }
+  var temp2 = nums_[indexSwapIterative];
+  nums_[indexSwapIterative] = nums_[lastIndex];
+  nums_[lastIndex] = temp2;
+  return indexSwapIterative;
+}
+quicksort(List nums, {int first_i = 0, int? last_i}){
+  last_i ??= nums.length - 1;
+  if (nums.length == 1){return nums;}
+  if (first_i < last_i){
+    int pi = partition(first_i, last_i, nums);
+    quicksort(nums, first_i: first_i, last_i: pi-1);
+    quicksort(nums, first_i: pi+1, last_i: last_i);
+  }
+  return nums;
+}
+List sort(List nums)=>quicksort(nums);

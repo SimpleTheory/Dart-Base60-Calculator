@@ -1,5 +1,6 @@
-import '../lib/math/base_60_math.dart' as base_60_math;
+import 'package:sexigesimal_alpha/math/base_60_math.dart' as base_60_math;
 import 'package:test/test.dart';
+
 
 List<T> reverse<T>(List<T> x) => List<T>.from(x.reversed);
 
