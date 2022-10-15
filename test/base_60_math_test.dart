@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
 import 'package:sexigesimal_alpha/math/base_60_math.dart' as base_60_math;
+
+import 'absBase60_test.dart';
 //try copywith & copy constructor or methods
 
 //generic
@@ -144,23 +146,27 @@ void main() {
 // -----------------------------------------------------------------------------
   group('comparator', (){
     test('truthy', (){
-      expect(base_60_math.comparator(
-          base_60_math.AbsBase60(number: [30, 27], fraction: []),
-          base_60_math.AbsBase60(number: [59], fraction: [])), 'gt');
-      expect(base_60_math.comparator([30, 27], [19, 39]), 'gt');
-      expect(base_60_math.comparator([30, 27], [30, 26]), 'gt');
-      expect(base_60_math.comparator(reverse([20, 40, 30]), reverse([40, 5, 5])), 'gt');
-      expect(base_60_math.comparator([30, 27], [30, 27]), 'eq');
+      base_60_math.AbsBase60 a = base_60_math.AbsBase60(number: [30, 27], fraction: [])
+      expect(base_60_math.comparator(a, base_60_math.AbsBase60(number: [59], fraction: [])), 'gt');
+      expect(base_60_math.comparator(a, base_60_math.AbsBase60(number: [19, 39], fraction: [])), 'gt');
+      expect(base_60_math.comparator(a, base_60_math.AbsBase60(number: [30,26], fraction: [])), 'gt');
+      expect(base_60_math.comparator(base_60_math.AbsBase60(number: reverse([20, 40, 30]), fraction: []),
+          base_60_math.AbsBase60(number: reverse([40, 5, 5]), fraction: [])), 'gt');
+      expect(base_60_math.comparator(a, a), 'eq');
     });
     test('falsey', (){
-      expect(base_60_math.comparator([59], [30, 27]), 'lt');
-      expect(base_60_math.comparator([1, 59], [30, 27]), 'lt');
-      expect(base_60_math.comparator([30, 26], [30, 27]), 'lt');
+      expect(base_60_math.comparator(base_60_math.AbsBase60(number: [59], fraction: []), a), 'lt');
+      expect(base_60_math.comparator(base_60_math.AbsBase60(number: [1,59], fraction: []), a), 'lt');
+      expect(base_60_math.comparator(base_60_math.AbsBase60(number: [30,26], fraction: []), a), 'lt');
     });
     test('comparator w/ abs number', (){
-      base_60_math.AbsBase60 a  = base_60_math.AbsBase60.from_commas('59');
+      base_60_math.AbsBase60 a  = base_60_math.AbsBase60.from_commas('59;34,49');
       base_60_math.AbsBase60 b  = base_60_math.AbsBase60.from_commas('38;12,9');
-      base_60_math.AbsBase60 c =  base_60_math.AbsBase60.from_commas(commas)
+      base_60_math.AbsBase60 c =  base_60_math.AbsBase60.from_commas(';43,43,32,59');
+      expect(base_60_math.comparator(a, c), 'gt');
+      expect(base_60_math.comparator(c, a), 'lt');
+      expect(base_60_math.comparator(c, c), 'eq');
+      expect(base_60_math.comparator(b, b), 'eq');
 
     });
     test('precompare frac', (){
@@ -195,7 +201,7 @@ void main() {
       expect(base_60_math.remove0sFromEnd([0]), []);
 
       });
-    test('', (){
+    test('inverse', (){
       base_60_math.AbsBase60 a = base_60_math.inverse(base_60_math.AbsBase60.from_commas('2;30'));
       expect(a, base_60_math.AbsBase60.from_commas(';24'));
     });

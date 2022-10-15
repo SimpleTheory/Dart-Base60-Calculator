@@ -124,7 +124,7 @@ class AbsBase60{
       return false;
     }
   }
-  bool isFloat()=> !isInt();
+  bool isDouble()=> !isInt();
   int toInt()=>
       reverse(number).mapIndexed(
               (index, element) => element * pow(60, index)
@@ -207,7 +207,8 @@ class AbsBase60{
 
 }
 class Base60 extends AbsBase60{
-  Base60({required super.number, required super.fraction, required negative});
+  Base60({required number, required fraction, required negative}):
+        super(number: number, fraction: fraction);
   //@TODO rewrite operators and constructors to fit negativity and positivity
   //<editor-fold desc="Methods">
   AbsBase60 abs()=>AbsBase60(number: number, fraction: fraction);
@@ -306,14 +307,11 @@ class WholeBase60Number{
   //
   // }
   AbsBase60 toAbs60(){
-    print(this);
-    print('sexi $seximals');
     WholeBase60Number self = copyWith();
     self.unReverse();
     if (seximals==0){return AbsBase60(number: self.number, fraction: []);}
 
     List<List<int>> number_frac = splitBeforeIndex(self.number, seximals*-1);
-    print(number_frac);
     return AbsBase60(number: number_frac[0], fraction: remove0sFromEnd(number_frac[1]));
   }
   int toInt(){
@@ -460,7 +458,23 @@ List<int> intToBase(int integer, int base){
 
 // Multiplication
 
-// Division
+// Division --------------------------------------------------------------------
+AbsBase60 inverse(AbsBase60 number){
+  WholeBase60Number wholeNumber = number.wholenumberizer();
+  for (int i in range(10000)){
+    double currentAnswer = (pow(60, wholeNumber.seximals+i))/wholeNumber.toInt();
+    if (currentAnswer.isInt){
+      return WholeBase60Number(
+          number: AbsBase60.from_integer(currentAnswer.toInt()).number,
+          seximals: i).toAbs60();
+    }
+  }
+  double currentAnswer = (pow(60, wholeNumber.seximals+10002))/wholeNumber.toInt();
+  return WholeBase60Number(
+      number: AbsBase60.from_integer(currentAnswer.round()).number,
+      seximals: 10002).toAbs60();
+}
+AbsBase60 lazyDivision(AbsBase60 dividend, AbsBase60 divsior)=>multiply(dividend, inverse(divsior));
 
 // Sort ------------------------------------------------------------------------
 
