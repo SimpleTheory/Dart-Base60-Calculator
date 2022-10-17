@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
 import 'package:sexigesimal_alpha/math/base_60_math.dart' as base_60_math;
-
+import 'package:ari_utils/ari_utils.dart';
 import 'absBase60_test.dart';
 //try copywith & copy constructor or methods
 
@@ -26,7 +26,7 @@ void main() {
     test('base sub', (){
       expect(base_60_math.base60_unit_subtraction(3, 59), equals([4, -1]));
     });
-    test('base add 2', (){
+    test('base sub 2', (){
       expect(base_60_math.base60_unit_subtraction(5, 4), equals([1, 0]));
     });
     test('int to base', (){
@@ -39,71 +39,71 @@ void main() {
     test('add items in base number list (base60)', (){
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
       base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
-      base_60_math.AbsBase60 c = base_60_math.add_items_in_list_number(a.number, b.number);
+      base_60_math.AbsBase60 c = base_60_math.lazyAddition(a, b);
       // [0, 59,59,3,  5]
       // [1, 2, 3, 4,  5]
       // [2, 2, 2, 7, 10]
-      expect(listEquals(c.number, [2, 2, 2, 7, 10]), true);
+      expect(c.number, [2, 2, 2, 7, 10]);
     });
     test('add items in base number list (base60): carryover', (){
-      expect(listEquals(base_60_math.add_items_in_list_number(
-          [59, 59, 59, 59], [59, 59, 59, 59]), [1, 59, 59, 59, 58]), true);
+      expect(base_60_math.addItemsInListNumber(
+          [59, 59, 59, 59], [59, 59, 59, 59]), [1, 59, 59, 59, 58]);
     });
     test('add items in base number list (base60) 2', (){
       List<int> a = [7,17];
       List<int> b = [6];
-      expect(listEquals(
-          base_60_math.add_items_in_list_number(a, b), [7, 23]), true);
-      expect(listEquals(
-          base_60_math.add_items_in_list_number(b, a), [7, 23]), true);
+      expect(
+          base_60_math.addItemsInListNumber(a, b), [7, 23]);
+      expect(
+          base_60_math.addItemsInListNumber(b, a), [7, 23]);
     });
     test('add items in a list fraction', (){
-      expect(base_60_add_items_in_list_fraction([30, 40, 20], [5, 5, 40])),
-      equals([[35, 46, 0], 0]);
+      expect(base_60_math.addItemsInListFraction([30, 40, 20], [5, 5, 40]),
+      equals(ZipItem([35, 46, 0], 0)));
     });
     test('add items in a list fraction carryover', (){
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
       base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
-      List<int> c = base_60_math.add_items_in_list_fraction(a.number, b.number);
+      ZipItem<List<int>, int> c = base_60_math.addItemsInListFraction(a.number, b.number);
       // [59,59,3, 5, 0]
       // [1, 2, 3, 4, 5]
       //1[1, 1, 6, 9, 5]
 
-      expect(c, equals([[1, 1, 6, 9, 5], 1]));
+      expect(c, equals(ZipItem([1, 1, 6, 9, 5], 1)));
     });
   });
   //TODO take a look at this are reconvert to Base60 as opposed to AbsBase60
   group('2nd step integrated arthmitetic SUB', (){
       test('Subtract to 0', (){
-        expect(base_60_math.subtract_number([59, 59, 59, 59], [59, 59, 59, 59]),
+        expect(base_60_math.subtractNumber([59, 59, 59, 59], [59, 59, 59, 59]),
             equals([0]));
       });
       test('Subtract fraction', (){
         // 30 40 20
         //  5  5 40
         // 25 34 40
-        expect(base_60_math.subtract_fraction([30, 40, 20], [5, 5, 40]),
-            equals([[25, 34, 40], 0]));
+        expect(base_60_math.subtractFraction([30, 40, 20], [5, 5, 40]),
+            equals(ZipItem([25, 34, 40], 0)));
       });
       test('Subtract Fraction Carryover', (){
-        List a = base_60_math.subtract_fraction([5, 5, 40], [30, 40, 20]);
-        expect(a ,equals([[25, 34, 40], -1]));
+        ZipItem<List<int>, int> a = base_60_math.subtractFraction([5, 5, 40], [30, 40, 20]);
+        expect(a ,equals(ZipItem([25, 34, 40], -1)));
       });
       test('subtract fraction carry over 2', (){
         base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
         base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
-        List c = base_60_math.subtract_fraction(a.number, b.number);
+        ZipItem<List<int>, int> c = base_60_math.subtractFraction(a.number, b.number);
         // [59,59,3, 5, 0]e
         // [1, 2, 3, 4, 5]
         // 1[1, 1, 6, 9, 5]
-        expect(c, equals([[58, 57, 0, 0, 55], -1]));
+        expect(c, equals(ZipItem([58, 57, 0, 0, 55], -1)));
       });
     });
 // -----------------------------------------------------------------------------
   group('Lazy integrated arthmetic SUB', (){
-    base_60_math.AbsBase60 a = base_60_math.lazy_subtraction(base_60_math.AbsBase60.from_commas('4,16;18'),
+    base_60_math.AbsBase60 a = base_60_math.lazySubtraction(base_60_math.AbsBase60.from_commas('4,16;18'),
                                               base_60_math.AbsBase60.from_commas('1,12;6'));
-    base_60_math.AbsBase60 b = base_60_math.lazy_subtraction(base_60_math.AbsBase60.from_commas('1,12;6'),
+    base_60_math.AbsBase60 b = base_60_math.lazySubtraction(base_60_math.AbsBase60.from_commas('1,12;6'),
                                       base_60_math.AbsBase60.from_commas('4,16;18'));
     base_60_math.AbsBase60 expected = base_60_math.AbsBase60.from_commas('3,4;12');
     test('Calc a worked', (){
@@ -114,39 +114,39 @@ void main() {
 
       expect(b.abs(), equals(expected.abs()));
     });
-    test('Negative true', (){
-      expect(a.negative, true);
-    });
-    test('Negative false', (){
-
-      expect(b.negative, false);
-    });
+    // test('Negative true', (){
+    //   expect(a.negative, true);
+    // });
+    // test('Negative false', (){
+    //
+    //   expect(b.negative, false);
+    // });
   });
   group('Lazy integrated addition', (){
     test('lazy ADD', (){
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('4,16;54');
       base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('4,0;7');
-      base_60_math.AbsBase60 c = base_60_math.lazy_addition(a, b);
+      base_60_math.AbsBase60 c = base_60_math.lazyAddition(a, b);
       expect((c).toString(), equals('8,17;1'));
-      expect((c).toString(), base_60_math.lazy_addition(b, a).toString());
+      expect((c).toString(), base_60_math.lazyAddition(b, a).toString());
     });
     test('lazy add inverse', (){
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_integer(6);
       base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_integer(437);
-      expect(base_60_math.lazy_addition(a, b), base_60_math.lazy_addition(b, a));
+      expect(base_60_math.lazyAddition(a, b), base_60_math.lazyAddition(b, a));
     });
     test('lazy add int', (){
       int int_ = 6 + 437;
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_integer(6);
       base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_integer(437);
       base_60_math.AbsBase60 expected = base_60_math.AbsBase60.from_integer(int_);
-      expect(base_60_math.lazy_addition(a, b), equals(expected));
+      expect(base_60_math.lazyAddition(a, b), equals(expected));
     });
   });
 // -----------------------------------------------------------------------------
   group('comparator', (){
     test('truthy', (){
-      base_60_math.AbsBase60 a = base_60_math.AbsBase60(number: [30, 27], fraction: [])
+      base_60_math.AbsBase60 a = base_60_math.AbsBase60(number: [30, 27], fraction: []);
       expect(base_60_math.comparator(a, base_60_math.AbsBase60(number: [59], fraction: [])), 'gt');
       expect(base_60_math.comparator(a, base_60_math.AbsBase60(number: [19, 39], fraction: [])), 'gt');
       expect(base_60_math.comparator(a, base_60_math.AbsBase60(number: [30,26], fraction: [])), 'gt');
@@ -214,7 +214,7 @@ void main() {
     test('lazy division', (){
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('2;30');
       base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('1;30');
-      base_60_math.AbsBase60 c = base_60_math.lazy_division(a, b);
+      base_60_math.AbsBase60 c = base_60_math.lazyDivision(a, b);
       expect(c, base_60_math.AbsBase60.from_commas('1;40'));
     });
   });
