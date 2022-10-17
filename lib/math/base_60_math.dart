@@ -419,8 +419,10 @@ List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool
 
   List<int> prepped_self = prepped_number[0]+prepped_fraction[0];
   List<int> prepped_other = prepped_number[1]+prepped_fraction[1];
-
+  print(prepped_other);
+  print(prepped_self);
   for (int i in range(prepped_self.length)){
+    print('${prepped_self[i]} ${prepped_other[i]} bruh');
     if (prepped_self[i] > prepped_other[i]){return 'gt';}
     if (prepped_self[i] < prepped_other[i]){return 'lt';}
   }

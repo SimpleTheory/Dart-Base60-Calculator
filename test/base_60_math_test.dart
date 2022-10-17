@@ -155,6 +155,7 @@ void main() {
       expect(base_60_math.comparator(a, a), 'eq');
     });
     test('falsey', (){
+      base_60_math.AbsBase60 a = base_60_math.AbsBase60(number: [30, 27], fraction: []);
       expect(base_60_math.comparator(base_60_math.AbsBase60(number: [59], fraction: []), a), 'lt');
       expect(base_60_math.comparator(base_60_math.AbsBase60(number: [1,59], fraction: []), a), 'lt');
       expect(base_60_math.comparator(base_60_math.AbsBase60(number: [30,26], fraction: []), a), 'lt');
