@@ -78,7 +78,7 @@ void main() {
         expect(base_60_math.subtractNumber([59, 59, 59, 59], [59, 59, 59, 59]),
             equals([0]));
       });
-      test('Subtract fraction', (){
+      test('Subtract Number', (){
         // 30 40 20
         //  5  5 40
         // 25 34 40
@@ -89,14 +89,14 @@ void main() {
         ZipItem<List<int>, int> a = base_60_math.subtractFraction([5, 5, 40], [30, 40, 20]);
         expect(a ,equals(ZipItem([25, 34, 40], -1)));
       });
-      test('subtract fraction carry over 2', (){
+      test('add fraction carry over 2', (){
         base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');
         base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('59,59,3,5');
-        ZipItem<List<int>, int> c = base_60_math.subtractFraction(a.number, b.number);
+        ZipItem<List<int>, int> c = base_60_math.addItemsInListFraction(a.number, b.number);
         // [59,59,3, 5, 0]e
         // [1, 2, 3, 4, 5]
         // 1[1, 1, 6, 9, 5]
-        expect(c, equals(ZipItem([58, 57, 0, 0, 55], -1)));
+        expect(c, equals(ZipItem([1, 1, 6, 9, 5], 1)));
       });
     });
 // -----------------------------------------------------------------------------
@@ -126,9 +126,12 @@ void main() {
     test('lazy ADD', (){
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('4,16;54');
       base_60_math.AbsBase60 b = base_60_math.AbsBase60.from_commas('4,0;7');
+      // 4 16 54
+      // 4  0  7
+      // 8 17  1
       base_60_math.AbsBase60 c = base_60_math.lazyAddition(a, b);
       expect((c).toString(), equals('8,17;1'));
-      expect((c).toString(), base_60_math.lazyAddition(b, a).toString());
+      expect(base_60_math.lazyAddition(b, a).toString(), c.toString());
     });
     test('lazy add inverse', (){
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_integer(6);
@@ -192,7 +195,7 @@ void main() {
       => base_60_math.AbsBase60.from_integer(e)).toList();
       List<base_60_math.AbsBase60> final_ = sorted([661, 409, 7236, 1976, 2764]).map((e)
       => base_60_math.AbsBase60.from_integer(e)).toList();
-      expect(base_60_math.sort(init_), final_);
+      expect(base_60_math.sortBase60List(init_), final_);
 
     });
     test('remove 0s from end frac list', () {
@@ -208,8 +211,8 @@ void main() {
     });
     test('carry over reformat', (){
       List<int> a = base_60_math.carry_over_reformat_base([43, 108, 70, 67, 23, 137]);
-      expect(base_60_math.carry_over_reformat_base([60, 59, 59, 59, 59]), [0, 0, 0, 0, 0, 1]);
-      expect(a, [43, 48, 11, 8, 24, 17, 2]);
+      expect(base_60_math.carry_over_reformat_base([60, 59, 59, 59, 59], ), reverse([0, 0, 0, 0, 0, 1]));
+      expect(a, reverse([43, 48, 11, 8, 24, 17, 2]));
     });
 
     test('lazy division', (){

@@ -54,10 +54,10 @@ class AbsBase60{
   String debug() {
     return 'AbsBase60{number: $number, fraction: $fraction,}';
   }
-  AbsBase60 copyWith({List<int>? number, List<int>? fraction,}) {
+  AbsBase60 copyWith({List<int>? number_, List<int>? fraction_,}) {
     return AbsBase60(
-      number: number ?? this.number,
-      fraction: fraction ?? this.fraction,
+      number: number_ ?? List.from(number),
+      fraction: fraction_ ?? List.from(fraction),
     );
   }
   Map<String, dynamic> toMap() {
@@ -247,12 +247,12 @@ class WholeBase60Number{
     return 'WholeBase60Number{ number: $number, seximals: $seximals, reversed: $reversed,}';
   }
 
-  WholeBase60Number copyWith({List<int>? number, int? seximals, bool? reversed,})
+  WholeBase60Number copyWith({List<int>? number_, int? seximals_, bool? reversed_,})
   {
     return WholeBase60Number(
-      number: number ?? this.number,
-      seximals: seximals ?? this.seximals,
-      reversed: reversed ?? this.reversed,
+      number: number_ ?? List.from(number),
+      seximals: seximals_ ?? seximals,
+      reversed: reversed_ ?? reversed,
     );
   }
 
@@ -285,29 +285,7 @@ class WholeBase60Number{
   void unReverse(){
     if (reversed){toggleReverse();}
   }
-  // AbsBase60 toAbs60(){
-  //   WholeBase60Number self = copyWith();
-  //   self.unReverse();
-  //
-  //   if(self.seximals==self.number.length)
-  //     {print('eq___');
-  //     return AbsBase60(number: [], fraction: reverse(self.number));}
-  //
-  //   else if(self.seximals==0){print('not sexy');
-  //     return AbsBase60(number: self.number, fraction: []);}
-  //
-  //   else{
-  //     print(self);
-  //     List<int> num_ = self.number.sublist(0, seximals);
-  //     num_ = remove0sFromEnd(num_);
-  //     // num_ = reverse(num_);
-  //     List<int> frac = self.number.sublist(seximals);
-  //     // frac = reverse(frac);
-  //     // print('num_ $num_ frac $frac seximals $seximals NOT 1');
-  //     return AbsBase60(number: num_, fraction: frac);
-  //   }
-  //
-  // }
+
   AbsBase60 toAbs60(){
     WholeBase60Number self = copyWith();
     self.unReverse();
@@ -419,10 +397,7 @@ List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool
 
   List<int> prepped_self = prepped_number[0]+prepped_fraction[0];
   List<int> prepped_other = prepped_number[1]+prepped_fraction[1];
-  print(prepped_other);
-  print(prepped_self);
   for (int i in range(prepped_self.length)){
-    print('${prepped_self[i]} ${prepped_other[i]} bruh');
     if (prepped_self[i] > prepped_other[i]){return 'gt';}
     if (prepped_self[i] < prepped_other[i]){return 'lt';}
   }
@@ -514,8 +489,8 @@ ZipItem<List<int>, int> subtractItemsInList(List<int> subtractee, List<int> subt
   List<int> subList =  [];
   int carryover = 0;
   for (EnumListItem<ZipItem<int, int>> i in enumerateList(Zip.create(subtractee, subtractor))){
-    List<int> result_newCarryOver = base60_unit_subtraction(i.v[1], i.v[0]);
-    result_newCarryOver[0] += carryover;
+    i.v.item1 += carryover;
+    List<int> result_newCarryOver = base60_unit_subtraction(i.v[0], i.v[1]);
     carryover = result_newCarryOver[1];
     subList.add(result_newCarryOver[0]);
   }
@@ -526,6 +501,7 @@ List<int> subtractNumber(List<int> subtractee, List<int> subtractor) {
       AbsBase60(number: subtractee, fraction: []),
       AbsBase60(number: subtractor, fraction: [])
   );
+
   if (comparison == 'eq') {
     return [0];
   }
@@ -537,12 +513,15 @@ List<int> subtractNumber(List<int> subtractee, List<int> subtractor) {
   }
   List<List<int>> prepSubee_prepSuber = prep_compare(subtractee, subtractor,
       number: true, reversed: true);
+
   ZipItem<List<int>, int> subResult = subtractItemsInList(
       prepSubee_prepSuber[0], prepSubee_prepSuber[1]);
+  subResult.item1 = reverse(subResult[0]);
   subResult.item1 = remove0sFromEnd(subResult.item1, end: false);
   return subResult[0];
 }
 ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> subtractor){
+  int carryover = 0;
   String comparison = comparator(
       AbsBase60(number: subtractee, fraction: []),
       AbsBase60(number: subtractor, fraction: [])
@@ -553,19 +532,30 @@ ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> subtrac
     List<int> temp = subtractee;
     subtractee = subtractor;
     subtractor = temp;
+    carryover = -1;
   }
   List<List<int>> prepSubee_prepSuber = prep_compare(subtractee, subtractor,
       number: false, reversed: true);
-  ZipItem<List<int>, int> subResult = subtractItemsInList(
-      prepSubee_prepSuber[0], prepSubee_prepSuber[1]);
-  subResult.item1 = remove0sFromEnd(subResult.item1);
-  return subResult;}
+  List<int> subResult = subtractItemsInList(
+      prepSubee_prepSuber[0], prepSubee_prepSuber[1]).item1;
+  subResult = reverse(subResult);
+  subResult = remove0sFromEnd(subResult);
+  return ZipItem(subResult, carryover);}
+
 AbsBase60 lazySubtraction(AbsBase60 a, AbsBase60 b){
   a = a.copyWith();
   b = b.copyWith();
+  if (a==b){return AbsBase60.zero();}
+  else if (a<b){
+    var temp = a;
+    a = b;
+    b = temp;
+  }
   ZipItem<List<int>, int> fracResults = subtractFraction(a.fraction, b.fraction);
-  print(fracResults);
+
   a.number.negativeIndexEquals(-1, a.number.negativeIndex(-1)+fracResults.item2);
+
+
   List<int> numberResult = subtractNumber(a.number, b.number);
   return AbsBase60(number: numberResult, fraction: fracResults.item1);
 }
@@ -603,30 +593,39 @@ AbsBase60 inverse(AbsBase60 number){
 AbsBase60 lazyDivision(AbsBase60 dividend, AbsBase60 divsior)=>multiply(dividend, inverse(divsior));
 
 // Sort ------------------------------------------------------------------------
-
-partition(int firstIndex, int lastIndex, List nums_){
-  var pivotValues = nums_[lastIndex];
-  int indexSwapIterative = firstIndex;
-  for (int i in range(lastIndex, start: firstIndex)){
-    if (nums_[i] <= pivotValues){
-      var temp = nums_[i];
-      nums_[i]=nums_[indexSwapIterative];
-      nums_[indexSwapIterative] = temp;
-    }
-  }
-  var temp2 = nums_[indexSwapIterative];
-  nums_[indexSwapIterative] = nums_[lastIndex];
-  nums_[lastIndex] = temp2;
-  return indexSwapIterative;
+// <editor-fold desc="I tried lmao">
+// partition<E>(int firstIndex, int lastIndex, List nums_){
+//   var pivotValues = nums_[lastIndex];
+//   int indexSwapIterative = firstIndex;
+//   for (int i in range(lastIndex, start: firstIndex)){
+//     if (nums_[i] <= pivotValues){
+//       var temp = nums_[i];
+//       nums_[i]=nums_[indexSwapIterative];
+//       nums_[indexSwapIterative] = temp;
+//     }
+//   }
+//   var temp2 = nums_[indexSwapIterative];
+//   nums_[indexSwapIterative] = nums_[lastIndex];
+//   nums_[lastIndex] = temp2;
+//   return indexSwapIterative;
+// }
+// List<E> quicksort<E>(List<E> nums, {int first_i = 0, int? last_i}){
+//   last_i ??= nums.length - 1;
+//   if (nums.length == 1){return nums;}
+//   if (first_i < last_i){
+//     int pi = partition(first_i, last_i, nums);
+//     quicksort(nums, first_i: first_i, last_i: pi-1);
+//     quicksort(nums, first_i: pi+1, last_i: last_i);
+//   }
+//   return nums;
+// }
+// List<E> sort<E>(List<E> nums)=>quicksort(nums);
+// DOESNT WORK BECAUSE MODIFIED LISTS ARE LOCAL COPIES AND NOT REFERENCES LIKE IN PYTHON
+// THUS NEEDS TO BE DONE WITHIN A LOCAL SCOPE
+// </editor-fold>
+List<AbsBase60> sortBase60List(x, {maxFirst: false}){
+  List<AbsBase60> x_copy = List.from(x);
+  x_copy.sort((a,b)=> a.toDouble().compareTo(b.toDouble()));
+  if (maxFirst){x_copy = reverse(x_copy);}
+  return x_copy;
 }
-quicksort(List nums, {int first_i = 0, int? last_i}){
-  last_i ??= nums.length - 1;
-  if (nums.length == 1){return nums;}
-  if (first_i < last_i){
-    int pi = partition(first_i, last_i, nums);
-    quicksort(nums, first_i: first_i, last_i: pi-1);
-    quicksort(nums, first_i: pi+1, last_i: last_i);
-  }
-  return nums;
-}
-List sort(List nums)=>quicksort(nums);
