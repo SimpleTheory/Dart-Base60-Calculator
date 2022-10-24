@@ -87,6 +87,9 @@ class Character{
   int get number{
     int currentInt;
     if (lines == null && subnotation == null){currentInt = baseSymbol;}
+    else if (baseSymbol == 0 && lines != null){
+      currentInt = 60 - lines!;
+    }
     else if (lines != null && subnotation == null){
       currentInt = baseSymbol * (lines!+1);
     }
@@ -117,6 +120,7 @@ List<Character>listOfCharacters = [
   Character(baseSymbol: 12, character: 'Ώ'),
   Character(baseSymbol: 12, character: 'ΐ', addedOne: true),
   Character(baseSymbol: 2, character: 'Α', subnotation: 5, lines: 2),
+  // 15 ------
   Character(baseSymbol: 15, character: 'Β'),
   Character(baseSymbol: 4, character: 'Γ', lines: 3),
   Character(baseSymbol: 4, character: 'Δ', lines: 3, addedOne: true),
@@ -132,17 +136,38 @@ List<Character>listOfCharacters = [
   Character(baseSymbol: 3, character: 'Ξ', lines: 4, subnotation: 5),
   Character(baseSymbol: 4, character: 'Ο', lines: 2, subnotation: 5),
   Character(baseSymbol: 4, character: 'Π', lines: 2, subnotation: 5, addedOne: true),
+  // 30 -------
   Character(baseSymbol: 30, character: 'Ρ'),
   Character(baseSymbol: 30, character: 'Σ', addedOne: true),
   Character(baseSymbol: 4, character: 'Τ', lines: 3, subnotation: 5),
-  Character(baseSymbol: baseSymbol, character: character)
-  
-
-
-
-
-
-
+  Character(baseSymbol: 3, character: 'Υ', lines: 1, subnotation: 10),
+  Character(baseSymbol: 2, character: 'Φ', lines: 2, subnotation: 15),
+  Character(baseSymbol: 5, character: 'Χ', lines: 2, subnotation: 5),
+  Character(baseSymbol: 12, character: 'Ψ', lines: 2),
+  Character(baseSymbol: 12, character: 'Ω', lines: 2, addedOne: true),
+  Character(baseSymbol: 2, character: 'Ϊ', lines: 4, subnotation: 15),
+  Character(baseSymbol: 3, character: 'Ϋ', lines: 1, subnotation: 12),
+  Character(baseSymbol: 20, character: 'ά', lines: 1),
+  Character(baseSymbol: 20, character: 'έ', lines: 1, addedOne: true),
+  Character(baseSymbol: 6, character: 'ή', lines: 2, subnotation: 5),
+  Character(baseSymbol: 6, character: 'ί', lines: 2, subnotation: 5, addedOne: true),
+  Character(baseSymbol: 4, character: 'ΰ', lines: 1, subnotation: 10),
+  // 45 ---------
+  Character(baseSymbol: 15, character: 'α', lines: 2),
+  Character(baseSymbol: 2, character: 'β', lines: 3, subnotation: 20),
+  Character(baseSymbol: 2, character: 'γ', lines: 3, subnotation: 20, addedOne: true),
+  Character(baseSymbol: 12, character: 'δ', lines: 3),
+  Character(baseSymbol: 12, character: 'ε', lines: 3, addedOne: true),
+  Character(baseSymbol: 10, character: 'ζ', subnotation: 5),
+  Character(baseSymbol: 3, character: 'η', lines: 2, subnotation: 15),
+  Character(baseSymbol: 4, character: 'θ', lines: 1, subnotation: 12),
+  Character(baseSymbol: 4, character: 'ι', lines: 1, subnotation: 12, addedOne: true),
+  Character(baseSymbol: 6, character: 'κ', lines: 4, subnotation: 5),
+  Character(baseSymbol: 5, character: 'λ', lines: 1, subnotation: 10),
+  Character(baseSymbol: 4, character: 'μ', lines: 2, subnotation: 12),
+  Character(baseSymbol: 3, character: 'ν', lines: 4, subnotation: 15),
+  Character(baseSymbol: 0, character: 'character', lines: 2),
+  Character(baseSymbol: 0, character: 'character', lines: 1)
 ];
 
 // symbols
