@@ -166,9 +166,10 @@ List<Character>listOfCharacters = [
   Character(baseSymbol: 5, character: 'λ', lines: 1, subnotation: 10),
   Character(baseSymbol: 4, character: 'μ', lines: 2, subnotation: 12),
   Character(baseSymbol: 3, character: 'ν', lines: 4, subnotation: 15),
-  Character(baseSymbol: 0, character: 'character', lines: 2),
-  Character(baseSymbol: 0, character: 'character', lines: 1)
+  Character(baseSymbol: 0, character: 'ξ', lines: 2),
+  Character(baseSymbol: 0, character: 'ο', lines: 1)
 ];
+Map<String, int> symbolToInt = {for (Character i in listOfCharacters) i.character: i.number};
 
 // symbols
 // lines

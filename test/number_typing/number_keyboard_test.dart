@@ -13,5 +13,6 @@ void main() {
   test('list of chars', (){
     expect(listOfCharacters.map((e) => e.number).toList(), List.from(range(60)));
   });
+  // print(symbolToInt);
 
 }

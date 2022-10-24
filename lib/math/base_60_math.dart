@@ -204,8 +204,6 @@ class Base60 extends AbsBase60{
   late bool negative;
   Base60({required super.number, required super.fraction, required this.negative});
 
-  //@TODO rewrite operators and constructors to fit negativity and positivity
-
   //<editor-fold desc="Constructors">
   @override
   factory Base60.from_integer(int int_){
@@ -234,10 +232,10 @@ class Base60 extends AbsBase60{
   }
   @override
   factory Base60.zero()=>Base60(number: [0], fraction: [], negative: false);
-  @override
   //</editor-fold>
 
   //<editor-fold desc="Methods">
+  @override
   AbsBase60 abs()=>AbsBase60(number: number, fraction: fraction);
   @override
   int toInt(){
@@ -266,8 +264,6 @@ class Base60 extends AbsBase60{
   //</editor-fold>
 
   //<editor-fold desc="Data Methods">
-
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -355,6 +351,12 @@ class Base60 extends AbsBase60{
     AbsBase60 answer = lazyDivision(abs(), other.abs());
     return answer.toBase60(negative: neg);
 
+  }
+  Base60 operator ~/(o){
+    Base60 other = Base60.convert(o);
+    bool neg = Logical.xor(negative, other.negative);
+    AbsBase60 answer = lazyDivision(abs(), other.abs());
+    return Base60.from_integer(answer.toBase60(negative: neg).toInt());
   }
   String _convertComparison(Base60 a, Base60 b){
     if (Logical.nor(a.negative, b.negative)){return absComparator(a.abs(), b.abs());}
