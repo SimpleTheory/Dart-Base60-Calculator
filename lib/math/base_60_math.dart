@@ -257,7 +257,17 @@ class Base60 extends AbsBase60{
     if (negative){answer *= -1;}
     return answer;
   }
-  static convert
+  static Base60 convert(val){
+    if (val is Base60){return val.copyWith();}
+    else if (val is AbsBase60){return val.toBase60();}
+    else if (val is int){return Base60.from_integer(val);}
+    else if (val is double){return Base60.from_double(val);}
+    else if (val is String){return Base60.from_commas(val);}
+    throw ArgumentError('Val $val of ${val.runtimeType} is an invalid arg type'
+        'for Base60 convert');
+
+  }
+
 
   //</editor-fold>
 
