@@ -91,7 +91,6 @@ class AbsBase60{
   }
   AbsBase60.zero(){number=[0]; fraction=[];}
   AbsBase60.from_integer(int int){number = intToBase(int.abs(), 60); fraction=[];}
-  AbsBase60.from_symbols(String symbols){} //TODO WHEN I HAVE FONT
   factory AbsBase60.from_double(double double){
     for (num i in range(101)){
       num currentAnswer = double * pow(60, i);
@@ -164,13 +163,9 @@ class AbsBase60{
     else if (other is AbsBase60){return other;}
     else if (other is double){return AbsBase60.from_double(other);}
     else if (other is WholeBase60Number){return other.toAbs60();}
-    else if (other is String){
-      RegExp isCommas = RegExp('^\d{1,2}|^;');
-      if (isCommas.hasMatch(other)) {return AbsBase60.from_commas(other);}
-      else{return AbsBase60.from_symbols(other);}
-    }
-    else {throw ArgumentError('Other $other is an invalid type'
-        ' for Abs60 other operation, type = ${other.runtimeType}');}
+    else if (other is String){return AbsBase60.from_commas(other);}
+    else {throw ArgumentError('Other $other is an invalid type '
+        'for Abs60 other operation, type = ${other.runtimeType}');}
   }
   bool operator >(other){
     other = AbsBase60.convertOther(other);
@@ -240,7 +235,6 @@ class Base60 extends AbsBase60{
   @override
   factory Base60.zero()=>Base60(number: [0], fraction: [], negative: false);
   @override
-  // TODO factory from_symbols(){}
   //</editor-fold>
 
   //<editor-fold desc="Methods">
@@ -805,7 +799,7 @@ AbsBase60 inverse(AbsBase60 number){
       number: AbsBase60.from_integer(currentAnswer.round()).number,
       seximals: 10002).toAbs60();
 }
-AbsBase60 lazyDivision(AbsBase60 dividend, AbsBase60 divsior)=>multiply(dividend, inverse(divsior));
+AbsBase60 lazyDivision(AbsBase60 dividend, AbsBase60 divisor)=>multiply(dividend, inverse(divisor));
 
 // Sort ------------------------------------------------------------------------
 // <editor-fold desc="I tried lmao">
