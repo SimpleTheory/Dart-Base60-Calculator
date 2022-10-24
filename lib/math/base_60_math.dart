@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'dart:math';
 
 // Meta-Utility ----------------------------------------------------------------
-  //<editor-fold desc="range, reverse, sorted, isInt, isPositive">
+  //<editor-fold desc="range, reverse, sorted, isInt, isPositive, xand">
 List<int> range(int stop, {int? start, int? step}){
   step ??= 1;
   start ??= 0;
@@ -25,19 +25,15 @@ List<List<E>> splitBeforeIndex<E>(List<E> og_list, int index){
   }
   return newList;
 }
+bool xand(bool a, bool b){
+  if ((a && b)||(!a && !b)){
+    return true;
+  }
+  return false;}
 // extension NumExtensions on num {bool get isInt => (this % 1) == 0;}
 extension IntExtensions on int {bool get isPositive => this > 0;}
 //</editor-fold>
 // generate tab  --->  ctrl + shift + g
-// KMS--------------------------------------------------------------------------
-AbsBase60 absolute(val){
-  if (val is AbsBase60){return val;}
-  else if(val is int){return AbsBase60.from_integer(val);}
-  else if(val is double){return AbsBase60.from_double(val);}
-  else if(val is Base60){return val.abs();}
-  else {throw TypeError();}
-}
-// Copy args got snapped because lack of primitives reeeeeeeee
 
 // Classes ---------------------------------------------------------------------
 class AbsBase60{
@@ -94,7 +90,7 @@ class AbsBase60{
     }
   }
   AbsBase60.zero(){number=[0]; fraction=[];}
-  AbsBase60.from_integer(int int){number = intToBase(int, 60); fraction=[];}
+  AbsBase60.from_integer(int int){number = intToBase(int.abs(), 60); fraction=[];}
   AbsBase60.from_symbols(String symbols){} //TODO WHEN I HAVE FONT
   factory AbsBase60.from_double(double double){
     for (num i in range(101)){
@@ -157,6 +153,7 @@ class AbsBase60{
 
   }
   AbsBase60 abs()=>copyWith();
+  Base60 toBase60({negative=false}) => Base60(number: number, fraction: fraction, negative: negative);
 
   //</editor-fold>
 
@@ -177,30 +174,30 @@ class AbsBase60{
   }
   bool operator >(other){
     other = AbsBase60.convertOther(other);
-    String result = comparator(this, other);
+    String result = absComparator(this, other);
     if (result=='gt'){return true;}else{return false;}
   }
   bool operator <(other){
     other = AbsBase60.convertOther(other);
-    String result = comparator(this, other);
+    String result = absComparator(this, other);
     if (result=='lt'){return true;}else{return false;}
   }
   bool operator >=(other){
     other = AbsBase60.convertOther(other);
-    String result = comparator(this, other);
+    String result = absComparator(this, other);
     if (result=='gt'||result=='eq'){return true;}
     else{return false;}
   }
   bool operator <=(other){
     other = AbsBase60.convertOther(other);
-    String result = comparator(this, other);
+    String result = absComparator(this, other);
     if (result=='lt'||result=='eq'){return true;}
     else{return false;}
   }
   @override
   bool operator ==(other){
       AbsBase60 other_ = AbsBase60.convertOther(other);
-      String result =  comparator(this, other_);
+      String result =  absComparator(this, other_);
       if (result=='eq'){return true;}
       else{return false;}}
   //TODO MATH OPERATORS
@@ -209,12 +206,168 @@ class AbsBase60{
 
 }
 class Base60 extends AbsBase60{
-  Base60({required number, required fraction, required negative}):
-        super(number: number, fraction: fraction);
+  late bool negative;
+  Base60({required super.number, required super.fraction, required this.negative});
+
   //@TODO rewrite operators and constructors to fit negativity and positivity
+
+  //<editor-fold desc="Constructors">
+  @override
+  factory Base60.from_integer(int int_){
+    bool negative = false;
+    AbsBase60 parent = AbsBase60.from_integer(int_);
+    if (int_.isNegative){negative=true;}
+    return parent.toBase60(negative: negative);
+  }
+  @override
+  factory Base60.from_double(double double_){
+    bool negative = false;
+    AbsBase60 parent = AbsBase60.from_double(double_);
+    if (double_.isNegative){negative=true;}
+    return parent.toBase60(negative: negative);
+  }
+  @override
+  factory Base60.from_commas(String commas){
+    commas = commas.trim();
+    bool negative = false;
+    if (commas.startsWith('-')){
+      negative = true;
+      commas = commas.substring(1);
+    }
+    AbsBase60 parent = AbsBase60.from_commas(commas);
+    return parent.toBase60(negative: negative);
+  }
+  @override
+  factory Base60.zero()=>Base60(number: [0], fraction: [], negative: false);
+  @override
+  // TODO factory from_symbols(){}
+  //</editor-fold>
+
   //<editor-fold desc="Methods">
   AbsBase60 abs()=>AbsBase60(number: number, fraction: fraction);
+  @override
+  int toInt(){
+    int answer = super.toInt();
+    if (negative){answer *= -1;}
+    return answer;
+  }
+  @override
+  double toDouble(){
+    double answer = super.toDouble();
+    if (negative){answer *= -1;}
+    return answer;
+  }
+  static convert
+
   //</editor-fold>
+
+  //<editor-fold desc="Data Methods">
+
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          (other is Base60 &&
+              runtimeType.toString() == other.runtimeType.toString() &&
+
+              number.runtimeType == other.number.runtimeType &&
+              number.toString() == other.number.toString() &&
+
+              fraction.runtimeType == other.fraction.runtimeType &&
+              fraction.toString() == other.fraction.toString() &&
+
+              negative.runtimeType == other.negative.runtimeType &&
+              negative.toString() == other.negative.toString()
+          );
+
+
+  @override
+  int get hashCode =>
+      number.hashCode ^
+      fraction.hashCode ^
+      negative.hashCode;
+
+
+  @override
+  String toString() {
+    String answer = super.toString();
+    if (negative){
+      answer = '-$answer';
+    }
+    return answer;
+  }
+
+
+  Base60 copyWith({
+    List<int>? number_, List<int>? fraction_, bool? negative_,}) {
+    return Base60(
+        number: number_ ?? List.from(number),
+        fraction: fraction_ ?? List.from(fraction),
+        negative: negative_ ?? negative);
+  }
+
+
+  Map<String, dynamic> toMap() {
+    return {
+      'number': number,
+      'fraction': fraction,
+      'negative': negative,
+    };
+  }
+
+  factory Base60.fromMap(Map<String, dynamic> map) {
+    return Base60(
+      number: map['number'] as List<int>,
+      fraction: map['fraction'] as List<int>,
+      negative: map['negative'] as bool,
+    );
+  }
+
+
+  //</editor-fold>
+
+  //<editor-fold desc="Operators">
+  Base60 operator +(o){
+    Base60 other = Base60.convert(o);
+    return toAddOrSubADDITION(this, other);
+
+  }
+  Base60 operator -(o){
+    Base60 other = Base60.convert(o);
+
+  }
+  Base60 operator *(o){
+    Base60 other = Base60.convert(o);
+
+  }
+  Base60 operator /(o){
+    Base60 other = Base60.convert(o);
+
+  }
+  @override
+  bool operator >(o){
+    Base60 other = Base60.convert(o);
+
+  }
+  @override
+  bool operator <(o){
+    Base60 other = Base60.convert(o);
+
+  }
+  @override
+  bool operator >=(o){
+    Base60 other = Base60.convert(o);
+
+  }
+  @override
+  bool operator <=(o){
+    Base60 other = Base60.convert(o);
+
+  }
+
+
+  //</editor-fold>
+
 }
 class WholeBase60Number{
   List<int> number;
@@ -294,6 +447,7 @@ class WholeBase60Number{
     List<List<int>> number_frac = splitBeforeIndex(self.number, seximals*-1);
     return AbsBase60(number: number_frac[0], fraction: remove0sFromEnd(number_frac[1]));
   }
+  Base60 toBase60({negative=false})=>toAbs60().toBase60(negative: negative);
   int toInt(){
     WholeBase60Number self = copyWith();
     self.reverseSelf();
@@ -390,8 +544,8 @@ List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool
 }
 // </editor-fold>
 // Comparison ------------------------------------------------------------------
-    //<editor-fold desc="comparator, returnMax">
-  String comparator(AbsBase60 self, AbsBase60 other){
+    //<editor-fold desc="comparator, returnMax, returnMin">
+  String absComparator(AbsBase60 self, AbsBase60 other){
   List<List<int>> prepped_number = prep_compare(self.number, other.number);
   List<List<int>> prepped_fraction = prep_compare(self.fraction, other.fraction);
 
@@ -404,12 +558,12 @@ List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool
   return 'eq';
   }
   AbsBase60 returnMax(AbsBase60 val1, AbsBase60 val2){
-    String result = comparator(val1, val2);
+    String result = absComparator(val1, val2);
     if (result=='eq' || result=='gt'){return val1;}
     return val2;
   }
   AbsBase60 returnMin(AbsBase60 val1, AbsBase60 val2){
-  String result = comparator(val1, val2);
+  String result = absComparator(val1, val2);
   if (result=='eq' || result=='lt'){return val1;}
   return val2;
 }
@@ -437,6 +591,27 @@ List<int> intToBase(int integer, int base) {
   }
   recurse(integer);
   return answer;
+}
+// Base60 Utility Functions ----------------------------------------------------
+Base60 toAddOrSubADDITION(Base60 first, Base60 second){
+  // if equal parity
+  if (xand(first.negative, second.negative)){
+    AbsBase60 answer = lazyAddition(first, second);
+    return answer.toBase60(negative: first.negative);
+  }
+  // if unequal parity
+  String comparison = absComparator(first.abs(), second.abs());
+  if (comparison == 'eq'){return Base60.zero();}
+  // if first.toAbs() > second.toAbs()
+  // first - second sign is first.negative
+  else if (comparison == 'gt'){
+    AbsBase60 answer = lazySubtraction(first, second);
+    return answer.toBase60(negative: first.negative);
+  }
+  // else
+  // second - first
+  AbsBase60 answer = lazySubtraction(second, first);
+  return answer.toBase60(negative: !first.negative);
 }
 // Addition --------------------------------------------------------------------
 List<int> addItemsInListNumber(List<int>l1, List<int>l2){
@@ -497,7 +672,7 @@ ZipItem<List<int>, int> subtractItemsInList(List<int> subtractee, List<int> subt
   return ZipItem(subList, carryover);
 }
 List<int> subtractNumber(List<int> subtractee, List<int> subtractor) {
-  String comparison = comparator(
+  String comparison = absComparator(
       AbsBase60(number: subtractee, fraction: []),
       AbsBase60(number: subtractor, fraction: [])
   );
@@ -522,7 +697,7 @@ List<int> subtractNumber(List<int> subtractee, List<int> subtractor) {
 }
 ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> subtractor){
   int carryover = 0;
-  String comparison = comparator(
+  String comparison = absComparator(
       AbsBase60(number: subtractee, fraction: []),
       AbsBase60(number: subtractor, fraction: [])
   );
@@ -542,21 +717,21 @@ ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> subtrac
   subResult = remove0sFromEnd(subResult);
   return ZipItem(subResult, carryover);}
 
-AbsBase60 lazySubtraction(AbsBase60 a, AbsBase60 b){
-  a = a.copyWith();
-  b = b.copyWith();
-  if (a==b){return AbsBase60.zero();}
-  else if (a<b){
-    var temp = a;
-    a = b;
-    b = temp;
+AbsBase60 lazySubtraction(AbsBase60 subtractee, AbsBase60 subtractor){
+  subtractee = subtractee.copyWith();
+  subtractor = subtractor.copyWith();
+  if (subtractee==subtractor){return AbsBase60.zero();}
+  else if (subtractee<subtractor){
+    var temp = subtractee;
+    subtractee = subtractor;
+    subtractor = temp;
   }
-  ZipItem<List<int>, int> fracResults = subtractFraction(a.fraction, b.fraction);
+  ZipItem<List<int>, int> fracResults = subtractFraction(subtractee.fraction, subtractor.fraction);
 
-  a.number.negativeIndexEquals(-1, a.number.negativeIndex(-1)+fracResults.item2);
+  subtractee.number.negativeIndexEquals(-1, subtractee.number.negativeIndex(-1)+fracResults.item2);
 
 
-  List<int> numberResult = subtractNumber(a.number, b.number);
+  List<int> numberResult = subtractNumber(subtractee.number, subtractor.number);
   return AbsBase60(number: numberResult, fraction: fracResults.item1);
 }
 // Multiplication --------------------------------------------------------------
@@ -623,7 +798,7 @@ AbsBase60 lazyDivision(AbsBase60 dividend, AbsBase60 divsior)=>multiply(dividend
 // DOESNT WORK BECAUSE MODIFIED LISTS ARE LOCAL COPIES AND NOT REFERENCES LIKE IN PYTHON
 // THUS NEEDS TO BE DONE WITHIN A LOCAL SCOPE
 // </editor-fold>
-List<AbsBase60> sortBase60List(x, {maxFirst: false}){
+List<AbsBase60> sortBase60List(x, {maxFirst = false}){
   List<AbsBase60> x_copy = List.from(x);
   x_copy.sort((a,b)=> a.toDouble().compareTo(b.toDouble()));
   if (maxFirst){x_copy = reverse(x_copy);}
