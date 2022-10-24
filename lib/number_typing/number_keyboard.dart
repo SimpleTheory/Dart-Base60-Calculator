@@ -113,7 +113,7 @@ List<Character>listOfCharacters = [
   Character(baseSymbol: 5, character: 'Ά'),
   Character(baseSymbol: 6, character: 'υ'),
   Character(baseSymbol: 6, character: 'Έ', addedOne: true),
-  Character(baseSymbol: 2, character: 'Ή', lines: 1),
+  Character(baseSymbol: 4, character: 'Ή', lines: 1),
   Character(baseSymbol: 3, character: 'Ί', lines: 2),
   Character(baseSymbol: 10, character: 'Ό'),
   Character(baseSymbol: 10, character: 'Ύ', addedOne: true),
