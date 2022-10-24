@@ -344,34 +344,64 @@ class Base60 extends AbsBase60{
   }
   Base60 operator -(o){
     Base60 other = Base60.convert(o);
+    other.negative = !other.negative;
+    return toAddOrSubADDITION(this, other);
 
   }
   Base60 operator *(o){
     Base60 other = Base60.convert(o);
+    bool neg = Logical.xor(negative, other.negative);
+    AbsBase60 answer = multiply(abs(), other.abs());
+    return answer.toBase60(negative: neg);
 
   }
   Base60 operator /(o){
     Base60 other = Base60.convert(o);
+    bool neg = Logical.xor(negative, other.negative);
+    AbsBase60 answer = lazyDivision(abs(), other.abs());
+    return answer.toBase60(negative: neg);
 
+  }
+  String _convertComparison(Base60 a, Base60 b){
+    if (Logical.nor(a.negative, b.negative)){return absComparator(a.abs(), b.abs());}
+    else if (!a.negative && b.negative){return 'gt';}
+    else if (a.negative && !b.negative){return 'lt';}
+    else {
+      String answer = absComparator(a.abs(), b.abs());
+      if (answer == 'lt'){answer = 'gt';}
+      else if (answer == 'gt'){answer = 'lt';}
+      return answer;
+    }
   }
   @override
   bool operator >(o){
     Base60 other = Base60.convert(o);
+    String cc = _convertComparison(this, other);
+    if (cc=='gt'){return true;}
+    return false;
 
   }
   @override
   bool operator <(o){
     Base60 other = Base60.convert(o);
+    String cc = _convertComparison(this, other);
+    if (cc=='lt'){return true;}
+    return false;
 
   }
   @override
   bool operator >=(o){
     Base60 other = Base60.convert(o);
-
+    String cc = _convertComparison(this, other);
+    if (cc=='gt' || cc=='eq'){return true;}
+    return false;
   }
   @override
   bool operator <=(o){
     Base60 other = Base60.convert(o);
+    String cc = _convertComparison(this, other);
+    if (cc=='lt' || cc=='eq'){return true;}
+    return false;
 
   }
 
