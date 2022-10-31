@@ -1,10 +1,10 @@
 class Character{
-  int baseSymbol;
-  int? lines, subnotation;
+  int baseSymbol; // button 6 5
+  int? lines, subnotation; // 4
   bool addedOne;
   String character;
 
-//<editor-fold desc="Data Methods">
+  //<editor-fold desc="Data Methods">
 
   Character({
     required this.baseSymbol,
@@ -170,7 +170,112 @@ List<Character>listOfCharacters = [
   Character(baseSymbol: 0, character: 'ο', lines: 1)
 ];
 Map<String, int> symbolToInt = {for (Character i in listOfCharacters) i.character: i.number};
+Map<int, String> intToSymbol = {for (Character i in listOfCharacters) i.number: i.character};
 
+class CharacterState{
+  int baseSymbol;
+  int? lines, subnotation;
+  bool addedOne = false;
+
+  List<Character> retrieveList(){
+    if (lines == null && subnotation == null){
+      return listOfCharacters.where((e) =>
+      (e.baseSymbol==baseSymbol &&
+       e.addedOne == addedOne)).toList();
+    }
+    else if (lines==null){
+      return listOfCharacters.where((e) =>
+       e.baseSymbol==baseSymbol &&
+       e.addedOne == addedOne &&
+       e.subnotation == subnotation).toList();
+    }
+    else if (subnotation==null){
+      return listOfCharacters.where((e) =>
+          e.baseSymbol==baseSymbol &&
+          e.addedOne == addedOne &&
+          e.lines == lines).toList();
+    }
+    else{
+      return listOfCharacters.where((e) =>
+          e.baseSymbol==baseSymbol &&
+          e.addedOne == addedOne &&
+          e.subnotation == subnotation &&
+          e.lines == lines).toList();
+    }
+  }
+
+  //<editor-fold desc="Data Methods">
+
+  CharacterState({
+    required this.baseSymbol,
+    this.lines,
+    this.subnotation,
+    this.addedOne = false,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          (other is CharacterState &&
+              runtimeType.toString() == other.runtimeType.toString() &&
+              baseSymbol.runtimeType == other.baseSymbol.runtimeType &&
+              baseSymbol.toString() == other.baseSymbol.toString() &&
+              lines.runtimeType == other.lines.runtimeType &&
+              lines.toString() == other.lines.toString() &&
+              subnotation.runtimeType == other.subnotation.runtimeType &&
+              subnotation.toString() == other.subnotation.toString() &&
+              addedOne.runtimeType == other.addedOne.runtimeType &&
+              addedOne.toString() == other.addedOne.toString());
+
+  @override
+  int get hashCode =>
+      baseSymbol.hashCode ^
+      lines.hashCode ^
+      subnotation.hashCode ^
+      addedOne.hashCode;
+
+  @override
+  String toString() {
+    return 'CharacterState{'
+        'baseSymbol: $baseSymbol'
+        'lines: $lines'
+        'subnotation: $subnotation'
+        'addedOne: $addedOne}';
+  }
+
+  CharacterState copyWith({
+    int? baseSymbol_,
+    int? lines_,
+    int? subnotation_,
+    bool? addedOne_,
+  }) {
+    return CharacterState(
+        baseSymbol: baseSymbol_ ?? baseSymbol,
+        lines: lines_ ?? lines,
+        subnotation: subnotation_ ?? subnotation,
+        addedOne: addedOne_ ?? addedOne);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'baseSymbol': baseSymbol,
+      'lines': lines,
+      'subnotation': subnotation,
+      'addedOne': addedOne,
+    };
+  }
+
+  factory CharacterState.fromMap(Map<String, dynamic> map) {
+    return CharacterState(
+      baseSymbol: map['baseSymbol'] as int,
+      lines: map['lines'] as int,
+      subnotation: map['subnotation'] as int,
+      addedOne: map['addedOne'] as bool,
+    );
+  }
+
+//</editor-fold>
+}
 // symbols
 // lines
 // sub-notation
@@ -179,3 +284,4 @@ Map<String, int> symbolToInt = {for (Character i in listOfCharacters) i.characte
 
 // 15
 // 1 2 3 4 5
+
