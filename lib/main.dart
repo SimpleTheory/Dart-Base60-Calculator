@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sexigesimal_alpha/number_typing/bloc/number_typing_bloc.dart';
 import 'package:sexigesimal_alpha/number_typing/character_typing_page.dart';
 import 'package:sexigesimal_alpha/number_typing/number_keyboard.dart';
 
@@ -19,7 +21,10 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home: const NumberTypingPage(), //TODO
+      // Wrap page with correct bloc provider
+      home: BlocProvider(
+          create: (BuildContext context) => NumberTypingBloc(),
+          child: const NumberTypingPage()), //TODO
     );
   }
 }

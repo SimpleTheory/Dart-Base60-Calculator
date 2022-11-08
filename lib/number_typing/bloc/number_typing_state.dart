@@ -1,9 +1,75 @@
 part of 'number_typing_bloc.dart';
 
 @immutable
-abstract class NumberTypingState {}
+abstract class NumberTypingState {
+  late String userInput;
+  late ProxyNumber proxyNumber;
+  Map<String, bool> buttonEnable = {
+    '1': false,
+    '2': false,
+    '3': false,
+    '4': false,
+    listOfCharacters[0].character: true,
+    listOfCharacters[1].character: true,
+    listOfCharacters[2].character: true,
+    listOfCharacters[3].character: true,
+    listOfCharacters[4].character: true,
+    listOfCharacters[5].character: true,
+    listOfCharacters[6].character: true,
+    listOfCharacters[10].character: true,
+    listOfCharacters[12].character: true,
+    listOfCharacters[15].character: true,
+    listOfCharacters[30].character: true,
+    'arrow right': false,
+  };
 
-class NumberTypingInitial extends NumberTypingState {}
+//<editor-fold desc="Data Methods">
+  NumberTypingState({
+    required this.userInput,
+    required this.proxyNumber,
+    Map<String, bool>? buttonEnable})
+  {this.buttonEnable = buttonEnable ?? this.buttonEnable;}
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NumberTypingState &&
+          runtimeType.toString() == other.runtimeType.toString() &&
+          userInput.runtimeType == other.userInput.runtimeType &&
+          userInput.toString() == other.userInput.toString() &&
+          proxyNumber.runtimeType == other.proxyNumber.runtimeType &&
+          proxyNumber.toString() == other.proxyNumber.toString() &&
+          buttonEnable.runtimeType == other.buttonEnable.runtimeType &&
+          buttonEnable.toString() == other.buttonEnable.toString());
+
+  @override
+  int get hashCode =>
+      userInput.hashCode ^ proxyNumber.hashCode ^ buttonEnable.hashCode;
+
+  @override
+  String toString() {
+    return 'NumberTypingState{'
+        'userInput: $userInput, '
+        'proxyNumber: $proxyNumber, '
+        'buttonEnable: $buttonEnable}';
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'userInput': userInput,
+      'proxyNumber': proxyNumber,
+      'buttonEnable': buttonEnable,
+    };
+  }
+
+//</editor-fold>
+}
+
+class NumberTypingInitial extends NumberTypingState {
+  NumberTypingInitial({required super.userInput, required super.proxyNumber, super.buttonEnable});
+  factory NumberTypingInitial.initial({String currentString = ''})=>NumberTypingInitial(userInput: currentString, proxyNumber: ProxyNumber());
+}
+
 
 class ProxyNumber{
   int? baseSymbol, lines, subnotation;
@@ -48,6 +114,20 @@ class ProxyNumber{
     }
     return false;
   }
+  Character returnValidCharacter() {
+    bool? addedOne_ = addedOne;
+    addedOne_ ??= false;
+    for (Character char in listOfCharacters) {
+      if (
+      char.baseSymbol == baseSymbol &&
+          char.subnotation == subnotation &&
+          char.lines == lines &&
+          char.addedOne == addedOne_
+      ){return char;}
+    }
+    throw(ArgumentError('No valid character for $this in listOfCharacters'));
+  }
+
 
 //<editor-fold desc="Data Methods">
   ProxyNumber({
