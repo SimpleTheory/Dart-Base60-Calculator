@@ -170,7 +170,17 @@ List<Character>listOfCharacters = [
   Character(baseSymbol: 0, character: 'ο', lines: 1)
 ];
 Map<String, int> symbolToInt = {for (Character i in listOfCharacters) i.character: i.number};
+Map<String, String> symbolToStringInt = {for (MapEntry i in symbolToInt.entries) i.key: i.value.toString()};
 Map<int, String> intToSymbol = {for (Character i in listOfCharacters) i.number: i.character};
+
+final List<String> operators = ['+','-','÷','*'];
+bool containsOperator(String currentInput){
+  for (String operator in operators){
+    if (currentInput.contains(operator) && currentInput.contains(' '))
+    {return true;}
+  }
+  return false;
+}
 
 class CharacterState{
   int baseSymbol;

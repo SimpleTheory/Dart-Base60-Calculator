@@ -78,7 +78,8 @@ class AbsBase60{
       number = commasSplit[0].isEmpty ? [] :
                commasSplit[0].split(',').map((e) => int.parse(e)).toList();
 
-      fraction = commasSplit[1].split(',').map((e) => int.parse(e)).toList();
+      fraction =  commasSplit[1].isEmpty ? [] :
+                  commasSplit[1].split(',').map((e) => int.parse(e)).toList();
       for (int i in number+fraction)
         {if (i>=60)
           {throw ArgumentError('OverbaseError $commas');}}
@@ -221,6 +222,7 @@ class Base60 extends AbsBase60{
   }
   @override
   factory Base60.from_commas(String commas){
+    if (commas == '-' || commas=='-;'){return Base60.zero();}
     commas = commas.trim();
     bool negative = false;
     if (commas.startsWith('-')){

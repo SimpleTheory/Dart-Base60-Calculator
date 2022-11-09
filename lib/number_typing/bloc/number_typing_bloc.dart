@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sexigesimal_alpha/number_typing/character_typing_page.dart';
 import 'package:bloc/bloc.dart';
@@ -82,7 +83,30 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
       });
     on<LeftArrowPress>((event, emit){
       print('inside on left');
+      if (isInitMap(state.buttonEnable) && state.userInput.isNotEmpty){
+        emit(NumberTypingInitial.initial(currentString: state.userInput.substring(0, state.userInput.length-1)));
+        return;
+      }
       emit(NumberTypingInitial.initial(currentString: state.userInput));
+    });
+    on<NegativePress>((event, emit) {
+      if (state.userInput.isEmpty){
+        emit(NumberTypingInitial.initial(currentString: '-' + state.userInput));
+      }
+      else{
+        emit(NumberTypingInitial.initial(currentString: state.userInput + '-'));
+      }
+      });
+    on<PeriodPress>((event, emit){
+      emit(NumberTypingInitial.initial(currentString: state.userInput + '.'));
+    });
+    on<OperatorPress>((event, emit){
+      String opString = ' ${event.operator} ';
+      if (!(containsOperator(state.userInput))){
+        emit(NumberTypingInitial.initial(currentString: state.userInput + opString));
+        return;
+      }
+      // TODO When implement equals have other operators return: result {op} ...
     });
   }
 }

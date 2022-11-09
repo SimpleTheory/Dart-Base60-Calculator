@@ -1,5 +1,28 @@
 part of 'number_typing_bloc.dart';
 
+final Map<String, bool> staticInitButtonEnable = {
+  '1': false,
+  '2': false,
+  '3': false,
+  '4': false,
+  listOfCharacters[0].character: true,
+  listOfCharacters[1].character: true,
+  listOfCharacters[2].character: true,
+  listOfCharacters[3].character: true,
+  listOfCharacters[4].character: true,
+  listOfCharacters[5].character: true,
+  listOfCharacters[6].character: true,
+  listOfCharacters[10].character: true,
+  listOfCharacters[12].character: true,
+  listOfCharacters[15].character: true,
+  listOfCharacters[30].character: true,
+  'arrow right': false,
+};
+
+bool isInitMap(Map<String, bool> comparison){
+  return const MapEquality<String, bool>().equals(staticInitButtonEnable, comparison);
+}
+
 @immutable
 abstract class NumberTypingState {
   late String userInput;

@@ -11,6 +11,10 @@ class NumberTypingPage extends StatelessWidget {
     context.read<NumberTypingBloc>().add(
         NumberTypingInProgress(symbol: symbol));
   }
+  void addOperatortoEvent(BuildContext context, String operator){
+    context.read<NumberTypingBloc>().add(
+        OperatorPress(operator: operator));
+  }
   void leftArrowPress(BuildContext context){
     print('left');
     context.read<NumberTypingBloc>().add(
@@ -22,6 +26,26 @@ class NumberTypingPage extends StatelessWidget {
   }
   bool mapOfSymbol(BuildContext context, String symbol){
     return context.read<NumberTypingBloc>().state.buttonEnable[symbol]!;
+  }
+
+  bool canPressPeriod(String str, Map<String, bool> map){
+    // if period is not already there
+    if (isInitMap(map)){
+      if (containsOperator(str)){
+      RegExp untilOp = RegExp(r'(?<=\s)\w+$');
+      String? numInQ = untilOp.firstMatch(str)?.group(0);
+      if (numInQ == null){return false;}
+      else{true;}
+    }
+      return !(str.contains('.'));
+    }
+    return false;
+  }
+  bool canPressNegative(String input, Map<String, bool> map){
+    if (isInitMap(map)){
+      if (input.isEmpty || input.endsWith(' ')){return true;}
+      return false;}
+    return false;
   }
 
   @override
@@ -41,7 +65,7 @@ class NumberTypingPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(state.userInput, style: characterStyle,)
+                      Text(state.userInput, style: characterDisplay,)
                     ],
                   ),
                 ),
@@ -50,13 +74,18 @@ class NumberTypingPage extends StatelessWidget {
                   child: ColoredBox(
                     color: Colors.orange,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.add)),
-                        IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.minus_circle)),
-                        IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.multiply_circle)),
-                        IconButton(onPressed: (){}, icon: const Icon(CupertinoIcons.divide_circle)),
-                        ElevatedButton(onPressed: null, child: Text('Convert'))
+                        IconButton(onPressed: ()=> addOperatortoEvent(context, '+'),
+                            icon: const Icon(CupertinoIcons.add_circled)),
+                        IconButton(onPressed: ()=> addOperatortoEvent(context, '-'),
+                            icon: const Icon(CupertinoIcons.minus_circle)),
+                        IconButton(onPressed: ()=> addOperatortoEvent(context, '*'),
+                            icon: const Icon(CupertinoIcons.multiply_circle)),
+                        IconButton(onPressed: ()=> addOperatortoEvent(context, '÷'),
+                            icon: const Icon(CupertinoIcons.divide_circle)),
+                        IconButton(onPressed: null, icon: const Icon(CupertinoIcons.equal_circle)),
+                        const ElevatedButton(onPressed: null, child: Text('Convert'))
 
                       ],
                     ),
@@ -68,6 +97,17 @@ class NumberTypingPage extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                    onPressed: (canPressNegative(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(NegativePress()): null,
+                    child: Text('-', style: characterStyle)),
+                ElevatedButton(
+                    onPressed: (canPressPeriod(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(PeriodPress()): null,
+                    child: Text('.', style: characterStyle))
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -188,6 +228,10 @@ class NumberTypingPage extends StatelessWidget {
   }
 }
 
+TextStyle characterDisplay = const TextStyle(
+  fontFamily: 'ari_numbers',
+  fontSize: 150
+);
 TextStyle characterStyle = const TextStyle(
                           fontFamily: 'ari_numbers',
-                          fontSize:   100);
+                          fontSize: 40);

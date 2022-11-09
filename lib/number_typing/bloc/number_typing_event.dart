@@ -10,3 +10,9 @@ class NumberTypingInProgress extends NumberTypingEvent{
 }
 class RightArrowPress extends NumberTypingEvent{}
 class LeftArrowPress extends NumberTypingEvent{}
+class NegativePress extends NumberTypingEvent{}
+class PeriodPress extends NumberTypingEvent{}
+class OperatorPress extends NumberTypingEvent{
+  late String operator;
+  OperatorPress({required this.operator});
+}
