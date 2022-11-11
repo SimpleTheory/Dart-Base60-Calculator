@@ -97,7 +97,7 @@ void main() {
     });
     test('from commas only frac', (){
       base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas(';11');
-      expect(a.number, []);
+      expect(a.number, [0]);
       expect(a.fraction, [11]);
     });
     test('from_int', (){
@@ -114,7 +114,23 @@ void main() {
     });
     test('from commas ;0,0,1', () {
       expect(base_60_math.AbsBase60.from_commas(';0,0,1')
-          .toString(),';0,0,1');
+          .toString(),'0;0,0,1');
+    });
+    test('from commas -;0,0,1', () {
+      expect(base_60_math.Base60.from_commas('-;0,0,1')
+          .toString(),'-0;0,0,1');
+    });
+    test('from commas ;0,0,1,0,0,0', () {
+      expect(base_60_math.AbsBase60.from_commas(';0,0,1,0,0,0')
+          .toString(),'0;0,0,1');
+    });
+    test('from commas 0,0,1', () {
+      expect(base_60_math.AbsBase60.from_commas('0,0,1')
+          .toString(),'1');
+    });
+    test('from commas 0,0,0', () {
+      expect(base_60_math.AbsBase60.from_commas('0,0,0')
+          .toString(),'0');
     });
   });
   group('WholeNumber', () {

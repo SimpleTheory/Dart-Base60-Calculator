@@ -15,6 +15,7 @@ final Map<String, bool> staticInitButtonEnable = {
   listOfCharacters[10].character: true,
   listOfCharacters[12].character: true,
   listOfCharacters[15].character: true,
+  listOfCharacters[20].character: true,
   listOfCharacters[30].character: true,
   'arrow right': false,
 };
@@ -42,6 +43,7 @@ abstract class NumberTypingState {
     listOfCharacters[10].character: true,
     listOfCharacters[12].character: true,
     listOfCharacters[15].character: true,
+    listOfCharacters[20].character: true,
     listOfCharacters[30].character: true,
     'arrow right': false,
   };

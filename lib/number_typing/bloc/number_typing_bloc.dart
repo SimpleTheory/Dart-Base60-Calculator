@@ -63,6 +63,7 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
         listOfCharacters[10].character: subnotes[10] ?? false,
         listOfCharacters[12].character: subnotes[12] ?? false,
         listOfCharacters[15].character: subnotes[15] ?? false,
+        listOfCharacters[20].character: subnotes[20] ?? false,
         listOfCharacters[30].character: false,
         'arrow right': state.proxyNumber.isValid(),};
 
@@ -70,6 +71,9 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
         buttonEnable[state.proxyNumber.lines.toString()]=false;}
       if (state.proxyNumber.subnotation != null){
         buttonEnable[intToSymbol[state.proxyNumber.subnotation]!] = false;
+      }
+      if (state.proxyNumber.addedOne == true){
+        buttonEnable[listOfCharacters[1].character] = false;
       }
 
       emit(NumberTypingInitial(userInput: state.userInput, proxyNumber: state.proxyNumber, buttonEnable: buttonEnable));
@@ -82,8 +86,13 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
       emit(NumberTypingInitial.initial(currentString: state.userInput + newSymbol.character));
       });
     on<LeftArrowPress>((event, emit){
-      print('inside on left');
       if (isInitMap(state.buttonEnable) && state.userInput.isNotEmpty){
+        for (String operator in operators){
+          if (state.userInput.endsWith(' $operator ')){
+            emit(NumberTypingInitial.initial(currentString: state.userInput.substring(0, state.userInput.length-3)));
+            return;
+          }
+        }
         emit(NumberTypingInitial.initial(currentString: state.userInput.substring(0, state.userInput.length-1)));
         return;
       }
@@ -98,15 +107,50 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
       }
       });
     on<PeriodPress>((event, emit){
-      emit(NumberTypingInitial.initial(currentString: state.userInput + '.'));
+      emit(NumberTypingInitial.initial(currentString: state.userInput + '·'));
     });
     on<OperatorPress>((event, emit){
       String opString = ' ${event.operator} ';
+      if (state.userInput.isEmpty){return;}
       if (!(containsOperator(state.userInput))){
         emit(NumberTypingInitial.initial(currentString: state.userInput + opString));
         return;
       }
       // TODO When implement equals have other operators return: result {op} ...
     });
+  }
+}
+
+bool canPressPeriod(String str, Map<String, bool> map){
+  // if period is not already there
+  print(str);
+  if (isInitMap(map)){
+    List<String>? opSplit = operatorSplit(str);
+    if (opSplit != null){
+      return !opSplit[2].contains('·');
+    }
+    return !str.contains('·');
+  }
+
+  return false;
+}
+
+RichText userInputWidget(String userInput){
+  List<String>? opSplit = operatorSplit(userInput);
+  if (opSplit == null){
+    return RichText(text: TextSpan(
+      children: <TextSpan>[
+        TextSpan(text: userInput, style: characterDisplay)
+      ]
+    ));
+  }
+  else{
+    return RichText(text: TextSpan(
+      children: <TextSpan>[
+        TextSpan(text: opSplit[0], style: characterDisplay),
+        TextSpan(text: ' ${opSplit[1]} ', style: const TextStyle(fontSize: 50)),
+        TextSpan(text: opSplit[2], style: characterDisplay),
+      ]
+    ));
   }
 }

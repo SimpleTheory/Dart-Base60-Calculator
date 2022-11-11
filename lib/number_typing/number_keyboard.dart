@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class Character{
   int baseSymbol; // button 6 5
   int? lines, subnotation; // 4
@@ -181,7 +183,16 @@ bool containsOperator(String currentInput){
   }
   return false;
 }
-
+List<String>? operatorSplit(String currentInput){
+  for (String operator in operators){
+    if (currentInput.contains(' $operator ')){
+      List<String> result = currentInput.split(' $operator ');
+      result.insert(1, operator);
+      return result;
+    }
+  }
+}
+String decimalChar = '·';
 class CharacterState{
   int baseSymbol;
   int? lines, subnotation;
@@ -285,6 +296,26 @@ class CharacterState{
   }
 
 //</editor-fold>
+}
+
+String getChar(int x)=>listOfCharacters[x].character;
+String symbolsToCommas(String symbols){
+  if (RegExp(r'^[·ρ-]+$').hasMatch(symbols)){return '0';}
+  Map<String, String> translate = Map<String, String>.from(symbolToStringInt);
+  translate[decimalChar]=';';
+  translate['-']='-';
+  String commas = '';
+  for (String char in symbols.characters){
+    print(char);
+    String charToAdd = translate[char]!;
+    if (RegExp(r'^\d+$').hasMatch(charToAdd)){
+      charToAdd += ',';
+    }
+    commas += charToAdd;
+  }
+  if (commas.contains(',;')){commas = commas.replaceAll(',;', ';');}
+  return commas.substring(0, commas.length-1);
+
 }
 // symbols
 // lines

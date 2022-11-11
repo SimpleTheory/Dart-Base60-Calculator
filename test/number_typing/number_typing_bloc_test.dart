@@ -78,6 +78,23 @@ void main(){
         setUp: (){numberTypingBloc.state.proxyNumber=ProxyNumber();},
         act: (numberTypingBloc){numberTypingBloc.add(NumberTypingInProgress(symbol: listOfCharacters[1].character));},
         expect: ()=>[NumberTypingInitial.initial(currentString: listOfCharacters[1].character)]);
+    blocTest('testing period button enable on 2nd falsey',
+        build: ()=>numberTypingBloc,
+        setUp: (){
+          numberTypingBloc.state.userInput = '${listOfCharacters[5].character} - ${listOfCharacters[4].character}·';
+          numberTypingBloc.state.buttonEnable = staticInitButtonEnable;
+      },
+        expect: ()=> [canPressPeriod(numberTypingBloc.state.userInput, numberTypingBloc.state.buttonEnable), false]
+    );
+    blocTest('testing period button enable on 2nd truthy',
+        build: ()=>numberTypingBloc,
+        setUp: (){
+          numberTypingBloc.state.userInput = '${listOfCharacters[5].character} - ${listOfCharacters[4].character}';
+          numberTypingBloc.state.buttonEnable = staticInitButtonEnable;
+        },
+        expect: ()=> [canPressPeriod(numberTypingBloc.state.userInput, numberTypingBloc.state.buttonEnable), true]
+    );
+
   });
 
 

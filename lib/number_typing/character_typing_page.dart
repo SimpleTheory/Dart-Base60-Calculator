@@ -28,19 +28,6 @@ class NumberTypingPage extends StatelessWidget {
     return context.read<NumberTypingBloc>().state.buttonEnable[symbol]!;
   }
 
-  bool canPressPeriod(String str, Map<String, bool> map){
-    // if period is not already there
-    if (isInitMap(map)){
-      if (containsOperator(str)){
-      RegExp untilOp = RegExp(r'(?<=\s)\w+$');
-      String? numInQ = untilOp.firstMatch(str)?.group(0);
-      if (numInQ == null){return false;}
-      else{true;}
-    }
-      return !(str.contains('.'));
-    }
-    return false;
-  }
   bool canPressNegative(String input, Map<String, bool> map){
     if (isInitMap(map)){
       if (input.isEmpty || input.endsWith(' ')){return true;}
@@ -61,11 +48,11 @@ class NumberTypingPage extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  flex: 1,
+                  flex: 4,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(state.userInput, style: characterDisplay,)
+                      userInputWidget(state.userInput)
                     ],
                   ),
                 ),
@@ -105,7 +92,7 @@ class NumberTypingPage extends StatelessWidget {
                     child: Text('-', style: characterStyle)),
                 ElevatedButton(
                     onPressed: (canPressPeriod(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(PeriodPress()): null,
-                    child: Text('.', style: characterStyle))
+                    child: Text('·', style: characterStyle))
               ],
             ),
             Row(
@@ -191,6 +178,14 @@ class NumberTypingPage extends StatelessWidget {
                     addSymboltoEvent(context, listOfCharacters[15].character) : null,
                     child: Text(
                         listOfCharacters[15].character,
+                        style: characterStyle
+                    )
+                ),
+                ElevatedButton(
+                    onPressed:(mapOfSymbol(context, listOfCharacters[20].character)) ? ()=>
+                        addSymboltoEvent(context, listOfCharacters[20].character) : null,
+                    child: Text(
+                        listOfCharacters[20].character,
                         style: characterStyle
                     )
                 ),

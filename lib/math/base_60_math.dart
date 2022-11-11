@@ -80,15 +80,16 @@ class AbsBase60{
 
       fraction =  commasSplit[1].isEmpty ? [] :
                   commasSplit[1].split(',').map((e) => int.parse(e)).toList();
-      for (int i in number+fraction)
-        {if (i>=60)
-          {throw ArgumentError('OverbaseError $commas');}}
-
+      for (int i in number+fraction){
+        if (i>=60){throw ArgumentError('OverbaseError $commas');}}
     }
     else{
       number = commas.split(',').map((e) => int.parse(e)).toList();
       fraction = [];
     }
+    fraction = remove0sFromEnd(fraction);
+    if (number.every((element) => element==0)){number=[0];}
+    else{number = remove0sFromEnd(number, end: false);}
   }
   AbsBase60.zero(){number=[0]; fraction=[];}
   AbsBase60.from_integer(int int){number = intToBase(int.abs(), 60); fraction=[];}
