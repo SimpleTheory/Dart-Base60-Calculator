@@ -1,30 +1,11 @@
 // Imports
-import 'package:ari_utils/ari_utils.dart';
+
+import 'package:ari_utils/ari_utils.dart' as ari;
 import 'package:collection/collection.dart';
 import 'dart:math';
 
 // Meta-Utility ----------------------------------------------------------------
   //<editor-fold desc="range, reverse, sorted, isInt, isPositive, xand">
-List<int> range(int stop, {int? start, int? step}){
-  step ??= 1;
-  start ??= 0;
-  List<int> range = [];
-  for (int i = start; i < stop; i+=step){
-    range.add(i);
-  }
-  return range;
-}
-List<T> reverse<T>(List<T> x) => List<T>.from(x.reversed);
-List<T> sorted<T>(List<T> x){List<T> y = List.from(x); y.sort(); return y;}
-List<List<E>> splitBeforeIndex<E>(List<E> og_list, int index){
-  while (index<0){index += og_list.length; }
-  List<List<E>> newList = [[],[]];
-  for (int i in range(og_list.length)){
-    if (i>=index){newList[1].add(og_list[i]);}
-    else {newList[0].add(og_list[i]);}
-  }
-  return newList;
-}
 bool xand(bool a, bool b){
   if ((a && b)||(!a && !b)){
     return true;
@@ -94,7 +75,7 @@ class AbsBase60{
   AbsBase60.zero(){number=[0]; fraction=[];}
   AbsBase60.from_integer(int int){number = intToBase(int.abs(), 60); fraction=[];}
   factory AbsBase60.from_double(double double){
-    for (num i in range(101)){
+    for (num i in ari.range(101)){
       num currentAnswer = double * pow(60, i);
       if (currentAnswer.isInt){
         return WholeBase60Number(
@@ -124,7 +105,7 @@ class AbsBase60{
   }
   bool isDouble()=> !isInt();
   int toInt()=>
-      reverse(number).mapIndexed(
+      ari.reverse(number).mapIndexed(
               (index, element) => element * pow(60, index)
       ).toList().sum.toInt();
   double toDouble(){
@@ -343,26 +324,26 @@ class Base60 extends AbsBase60{
   }
   Base60 operator *(o){
     Base60 other = Base60.convert(o);
-    bool neg = Logical.xor(negative, other.negative);
+    bool neg = ari.Logical.xor(negative, other.negative);
     AbsBase60 answer = multiply(abs(), other.abs());
     return answer.toBase60(negative: neg);
 
   }
   Base60 operator /(o){
     Base60 other = Base60.convert(o);
-    bool neg = Logical.xor(negative, other.negative);
+    bool neg = ari.Logical.xor(negative, other.negative);
     AbsBase60 answer = lazyDivision(abs(), other.abs());
     return answer.toBase60(negative: neg);
 
   }
   Base60 operator ~/(o){
     Base60 other = Base60.convert(o);
-    bool neg = Logical.xor(negative, other.negative);
+    bool neg = ari.Logical.xor(negative, other.negative);
     AbsBase60 answer = lazyDivision(abs(), other.abs());
     return Base60.from_integer(answer.toBase60(negative: neg).toInt());
   }
   String _convertComparison(Base60 a, Base60 b){
-    if (Logical.nor(a.negative, b.negative)){return absComparator(a.abs(), b.abs());}
+    if (ari.Logical.nor(a.negative, b.negative)){return absComparator(a.abs(), b.abs());}
     else if (!a.negative && b.negative){return 'gt';}
     else if (a.negative && !b.negative){return 'lt';}
     else {
@@ -420,7 +401,7 @@ class WholeBase60Number{
     required this.seximals,
     this.reversed=false,
   })
-  {if (reversed){number=reverse(number);}}
+  {if (reversed){number=ari.reverse(number);}}
 
   @override
   bool operator ==(Object other) =>
@@ -468,7 +449,7 @@ class WholeBase60Number{
 
   //<editor-fold desc="Methods">
   void toggleReverse(){
-    number = reverse(number);
+    number = ari.reverse(number);
     reversed = !reversed;
   }
   void reverseSelf(){
@@ -483,7 +464,7 @@ class WholeBase60Number{
     self.unReverse();
     if (seximals==0){return AbsBase60(number: self.number, fraction: []);}
 
-    List<List<int>> number_frac = splitBeforeIndex(self.number, seximals*-1);
+    List<List<int>> number_frac = ari.splitBeforeIndex(self.number, seximals*-1);
     return AbsBase60(number: number_frac[0], fraction: remove0sFromEnd(number_frac[1]));
   }
   Base60 toBase60({negative=false})=>toAbs60().toBase60(negative: negative);
@@ -510,7 +491,7 @@ List<int> euclidean_division(int dividend, int divisor){
 List<int> base60_unit_addition(int n1, int n2){
   int temp = n1 + n2;
   List<int> r = euclidean_division(temp, 60);
-  return reverse(r);
+  return ari.reverse(r);
 }
 List<int> base60_unit_subtraction(int subtractee, int subtractor){
   int holdover = 0;
@@ -526,11 +507,11 @@ List<int> remove0sFromEnd(List<int>? val, {bool end=true}){
   if (val==null){return [];}
   if (val.isEmpty){return [];}
   List<int> newList = List.from(val);
-  if (end){newList = reverse(newList);}
+  if (end){newList = ari.reverse(newList);}
   while(newList[0]==0){
     newList = newList.sublist(1);
     if (newList.isEmpty){return [];}}
-  if (end) {return reverse(newList);}
+  if (end) {return ari.reverse(newList);}
   else{return newList;}
 }
 List<int> carry_over_reformat_base(List<int> ls){
@@ -549,9 +530,9 @@ List<int> carry_over_reformat_base(List<int> ls){
     }
     if (carryOver>0){temp_ls.add(carryOver);}
 
-    return reverse(temp_ls);
+    return ari.reverse(temp_ls);
   }
-  return reverse(ls);
+  return ari.reverse(ls);
 }
 List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool reversed=false}){
   List<int> rl1 = List.from(l1);
@@ -560,23 +541,23 @@ List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool
   int absLenDiff = lenDiff.abs();
   if (number){
     if (lenDiff.isPositive){
-      rl2 = range(absLenDiff).map((e) => 0).toList() + rl2;
+      rl2 = ari.range(absLenDiff).map((e) => 0).toList() + rl2;
     }
     else if(lenDiff.isNegative){
-      rl1 = range(absLenDiff).map((e) => 0).toList() + rl1;
+      rl1 = ari.range(absLenDiff).map((e) => 0).toList() + rl1;
     }
   }
   else{
     if (lenDiff.isPositive){
-      rl2 = rl2 + range(absLenDiff).map((e) => 0).toList();
+      rl2 = rl2 + ari.range(absLenDiff).map((e) => 0).toList();
     }
     else if(lenDiff.isNegative){
-      rl1 = rl1 + range(absLenDiff).map((e) => 0).toList();
+      rl1 = rl1 + ari.range(absLenDiff).map((e) => 0).toList();
     }
   }
   if (reversed){
-    rl1 = reverse(rl1);
-    rl2 = reverse(rl2);
+    rl1 = ari.reverse(rl1);
+    rl2 = ari.reverse(rl2);
   }
   return [rl1, rl2];
 
@@ -590,7 +571,7 @@ List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool
 
   List<int> prepped_self = prepped_number[0]+prepped_fraction[0];
   List<int> prepped_other = prepped_number[1]+prepped_fraction[1];
-  for (int i in range(prepped_self.length)){
+  for (int i in ari.range(prepped_self.length)){
     if (prepped_self[i] > prepped_other[i]){return 'gt';}
     if (prepped_self[i] < prepped_other[i]){return 'lt';}
   }
@@ -659,39 +640,39 @@ List<int> addItemsInListNumber(List<int>l1, List<int>l2){
 
   int holdover = 0;
   List<int> addedList = [];
-  for (ZipItem<int, int> i in Zip.create(rl1_rl2[0], rl1_rl2[1])){
+  for (ari.ZipItem<int, int> i in ari.Zip.create(rl1_rl2[0], rl1_rl2[1])){
     List<int> answer_holdover = base60_unit_addition(i.item1, i.item2);
     answer_holdover[0] += holdover;
     holdover = answer_holdover[1];
     addedList.add(answer_holdover[0]);
   }
-  addedList = reverse(addedList);
+  addedList = ari.reverse(addedList);
   if (holdover.isPositive){addedList.insert(0, holdover);}
   return addedList;
 
 }
-ZipItem<List<int>, int> addItemsInListFraction(List<int>l1, List<int>l2){
+ari.ZipItem<List<int>, int> addItemsInListFraction(List<int>l1, List<int>l2){
   List<List<int>> rl1_rl2 = prep_compare(l1, l2, number: false, reversed: true);
-  if (rl1_rl2[0].isEmpty){return ZipItem([], 0);}
+  if (rl1_rl2[0].isEmpty){return ari.ZipItem([], 0);}
 
   int holdover = 0;
   List<int> addedList = [];
-  for (int i in range(rl1_rl2[0].length)){
+  for (int i in ari.range(rl1_rl2[0].length)){
     List<int> answer_holdover = base60_unit_addition(rl1_rl2[0][i], rl1_rl2[1][i]);
     answer_holdover[0] += holdover;
     holdover = answer_holdover[1];
     addedList.add(answer_holdover[0]);
   }
-  addedList = reverse(addedList);
+  addedList = ari.reverse(addedList);
 
-  return ZipItem.fromList([addedList, holdover]);
+  return ari.ZipItem.fromList([addedList, holdover]);
 
 }
 AbsBase60 lazyAddition(AbsBase60 number1, AbsBase60 number2){
   AbsBase60 n1 = number1.copyWith();
   AbsBase60 n2 = number2.copyWith();
 
-  ZipItem<List<int>, int> frac_holdover = addItemsInListFraction(n1.fraction, n2.fraction);
+  ari.ZipItem<List<int>, int> frac_holdover = addItemsInListFraction(n1.fraction, n2.fraction);
   n1.number.negativeIndexEquals(-1, n1.number.negativeIndex(-1)+frac_holdover.item2);
   List<int> sum = addItemsInListNumber(n1.number, n2.number);
   return AbsBase60(number: sum, fraction: remove0sFromEnd(frac_holdover[0]));
@@ -699,16 +680,16 @@ AbsBase60 lazyAddition(AbsBase60 number1, AbsBase60 number2){
 }
 
 // Subtraction -----------------------------------------------------------------
-ZipItem<List<int>, int> subtractItemsInList(List<int> subtractee, List<int> subtractor){
+ari.ZipItem<List<int>, int> subtractItemsInList(List<int> subtractee, List<int> subtractor){
   List<int> subList =  [];
   int carryover = 0;
-  for (EnumListItem<ZipItem<int, int>> i in enumerateList(Zip.create(subtractee, subtractor))){
+  for (ari.EnumListItem<ari.ZipItem<int, int>> i in ari.enumerateList(ari.Zip.create(subtractee, subtractor))){
     i.v.item1 += carryover;
     List<int> result_newCarryOver = base60_unit_subtraction(i.v[0], i.v[1]);
     carryover = result_newCarryOver[1];
     subList.add(result_newCarryOver[0]);
   }
-  return ZipItem(subList, carryover);
+  return ari.ZipItem(subList, carryover);
 }
 List<int> subtractNumber(List<int> subtractee, List<int> subtractor) {
   String comparison = absComparator(
@@ -728,19 +709,19 @@ List<int> subtractNumber(List<int> subtractee, List<int> subtractor) {
   List<List<int>> prepSubee_prepSuber = prep_compare(subtractee, subtractor,
       number: true, reversed: true);
 
-  ZipItem<List<int>, int> subResult = subtractItemsInList(
+  ari.ZipItem<List<int>, int> subResult = subtractItemsInList(
       prepSubee_prepSuber[0], prepSubee_prepSuber[1]);
-  subResult.item1 = reverse(subResult[0]);
+  subResult.item1 = ari.reverse(subResult[0]);
   subResult.item1 = remove0sFromEnd(subResult.item1, end: false);
   return subResult[0];
 }
-ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> subtractor){
+ari.ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> subtractor){
   int carryover = 0;
   String comparison = absComparator(
       AbsBase60(number: subtractee, fraction: []),
       AbsBase60(number: subtractor, fraction: [])
   );
-  if (comparison == 'eq'){return ZipItem([], 0);}
+  if (comparison == 'eq'){return ari.ZipItem([], 0);}
   else if (comparison == 'lt'){
     // swap variables set negative to true
     List<int> temp = subtractee;
@@ -752,9 +733,9 @@ ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> subtrac
       number: false, reversed: true);
   List<int> subResult = subtractItemsInList(
       prepSubee_prepSuber[0], prepSubee_prepSuber[1]).item1;
-  subResult = reverse(subResult);
+  subResult = ari.reverse(subResult);
   subResult = remove0sFromEnd(subResult);
-  return ZipItem(subResult, carryover);}
+  return ari.ZipItem(subResult, carryover);}
 
 AbsBase60 lazySubtraction(AbsBase60 subtractee, AbsBase60 subtractor){
   subtractee = subtractee.copyWith();
@@ -765,7 +746,7 @@ AbsBase60 lazySubtraction(AbsBase60 subtractee, AbsBase60 subtractor){
     subtractee = subtractor;
     subtractor = temp;
   }
-  ZipItem<List<int>, int> fracResults = subtractFraction(subtractee.fraction, subtractor.fraction);
+  ari.ZipItem<List<int>, int> fracResults = subtractFraction(subtractee.fraction, subtractor.fraction);
 
   subtractee.number.negativeIndexEquals(-1, subtractee.number.negativeIndex(-1)+fracResults.item2);
 
@@ -775,9 +756,14 @@ AbsBase60 lazySubtraction(AbsBase60 subtractee, AbsBase60 subtractor){
 }
 // Multiplication --------------------------------------------------------------
 List<int> intMultiplication(List<int> n1, List<int> n2) {
+  // YOU WANT THE SMALLEST NUMBER IN FOR LOOP OR ELSE THE PROGRAM WILL HANG!!!
   List<int> sum = [0];
-  for (int _ in range(AbsBase60(number: n2, fraction: []).toInt())) {
-    sum = addItemsInListNumber(n1, sum);
+  AbsBase60 n1abs = AbsBase60(number: n1, fraction: []);
+  AbsBase60 n2abs = AbsBase60(number: n2, fraction: []);
+  n1 = returnMin(n1abs, n2abs).number; // iterator
+  n2 = returnMax(n1abs, n2abs).number; // adder
+  for (int _ in ari.range(AbsBase60(number: n1, fraction: []).toInt())) {
+    sum = addItemsInListNumber(n2, sum);
   }
   return sum;
 }
@@ -791,7 +777,7 @@ AbsBase60 multiply(AbsBase60 n1, AbsBase60 n2){
 // Division --------------------------------------------------------------------
 AbsBase60 inverse(AbsBase60 number){
   WholeBase60Number wholeNumber = number.wholenumberizer();
-  for (int i in range(10000)){
+  for (int i in ari.range(11)){
     double currentAnswer = (pow(60, wholeNumber.seximals+i))/wholeNumber.toInt();
     if (currentAnswer.isInt){
       return WholeBase60Number(
@@ -799,10 +785,12 @@ AbsBase60 inverse(AbsBase60 number){
           seximals: i).toAbs60();
     }
   }
-  double currentAnswer = (pow(60, wholeNumber.seximals+10002))/wholeNumber.toInt();
+  double currentAnswer = (pow(60, wholeNumber.seximals+12))/wholeNumber.toInt();
+  int roundedResult=currentAnswer.round();
+
   return WholeBase60Number(
-      number: AbsBase60.from_integer(currentAnswer.round()).number,
-      seximals: 10002).toAbs60();
+      number: AbsBase60.from_integer(roundedResult).number,
+      seximals: 12).toAbs60();
 }
 AbsBase60 lazyDivision(AbsBase60 dividend, AbsBase60 divisor)=>multiply(dividend, inverse(divisor));
 
@@ -811,7 +799,7 @@ AbsBase60 lazyDivision(AbsBase60 dividend, AbsBase60 divisor)=>multiply(dividend
 // partition<E>(int firstIndex, int lastIndex, List nums_){
 //   var pivotValues = nums_[lastIndex];
 //   int indexSwapIterative = firstIndex;
-//   for (int i in range(lastIndex, start: firstIndex)){
+//   for (int i in ari.range(lastIndex, start: firstIndex)){
 //     if (nums_[i] <= pivotValues){
 //       var temp = nums_[i];
 //       nums_[i]=nums_[indexSwapIterative];
@@ -840,6 +828,6 @@ AbsBase60 lazyDivision(AbsBase60 dividend, AbsBase60 divisor)=>multiply(dividend
 List<AbsBase60> sortBase60List(x, {maxFirst = false}){
   List<AbsBase60> x_copy = List.from(x);
   x_copy.sort((a,b)=> a.toDouble().compareTo(b.toDouble()));
-  if (maxFirst){x_copy = reverse(x_copy);}
+  if (maxFirst){x_copy = ari.reverse(x_copy);}
   return x_copy;
 }
