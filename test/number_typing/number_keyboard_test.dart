@@ -41,5 +41,28 @@ void main() {
   //   expect(, );
   // });
   // print(symbolToInt);
-
+  test('opService +', (){
+    String user = '${getChar(7)} + ${getChar(3)}';
+    List<String> split = operatorSplit(user)!;
+    String result = operationService(split);
+    expect(result, getChar(10));
+  });
+  test('opService +', (){
+    String user = '${getChar(7)} - ${getChar(3)}';
+    List<String> split = operatorSplit(user)!;
+    String result = operationService(split);
+    expect(result, getChar(4));
+  });
+  test('opService +', (){
+    String user = '${getChar(7)} * ${getChar(3)}';
+    List<String> split = operatorSplit(user)!;
+    String result = operationService(split);
+    expect(result, getChar(21));
+  });
+  test('opService +', (){
+    String user = '${getChar(9)} ÷ ${getChar(3)}';
+    List<String> split = operatorSplit(user)!;
+    String result = operationService(split);
+    expect(result, getChar(3));
+  });
 }

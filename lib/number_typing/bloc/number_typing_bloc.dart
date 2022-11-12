@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:sexigesimal_alpha/number_typing/character_typing_page.dart';
@@ -112,18 +111,29 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
     on<OperatorPress>((event, emit){
       String opString = ' ${event.operator} ';
       if (state.userInput.isEmpty){return;}
-      if (!(containsOperator(state.userInput))){
+      List<String>? ogStringOpSplit = operatorSplit(state.userInput);
+      if (ogStringOpSplit == null){
         emit(NumberTypingInitial.initial(currentString: state.userInput + opString));
         return;
       }
+      else if(ogStringOpSplit[2].isEmpty){return;}
+      else{
+        String result = operationService(ogStringOpSplit);
+        emit(NumberTypingInitial.initial(currentString: result + opString));
+        return;
+      }
+
       // TODO When implement equals have other operators return: result {op} ...
+    });
+    on<EqualsPress>((event, emit){
+      String result = operationService(state.userInput);
+      emit(NumberTypingInitial.initial(currentString: result));
     });
   }
 }
 
 bool canPressPeriod(String str, Map<String, bool> map){
   // if period is not already there
-  print(str);
   if (isInitMap(map)){
     List<String>? opSplit = operatorSplit(str);
     if (opSplit != null){
@@ -133,6 +143,19 @@ bool canPressPeriod(String str, Map<String, bool> map){
   }
 
   return false;
+}
+
+bool canPressEquals(String str, Map<String, bool> map) {
+  List<String>? opSplit = operatorSplit(str);
+  if (isInitMap(map) && opSplit != null) {
+    if (opSplit[2].isNotEmpty) {
+      return true;
+    }
+  }
+  return false;
+}
+bool canConvert(String str, Map<String, bool> map){
+  return !canPressEquals(str, map) && str.isNotEmpty;
 }
 
 RichText userInputWidget(String userInput){
@@ -148,7 +171,7 @@ RichText userInputWidget(String userInput){
     return RichText(text: TextSpan(
       children: <TextSpan>[
         TextSpan(text: opSplit[0], style: characterDisplay),
-        TextSpan(text: ' ${opSplit[1]} ', style: const TextStyle(fontSize: 50)),
+        TextSpan(text: ' ${opSplit[1]} ', style: const TextStyle(fontSize: 50, color: Colors.black)),
         TextSpan(text: opSplit[2], style: characterDisplay),
       ]
     ));

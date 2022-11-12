@@ -42,47 +42,45 @@ class NumberTypingPage extends StatelessWidget {
       body: BlocBuilder<NumberTypingBloc, NumberTypingState>(
       builder: (context, state) {
        return Column(
+         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          ColoredBox(
-            color: Colors.green,
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          Stack(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  userInputWidget(state.userInput),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      userInputWidget(state.userInput)
+                      IconButton(onPressed: ()=> addOperatortoEvent(context, '+'),
+                          icon: const Icon(CupertinoIcons.add_circled), iconSize: 40,),
+                      IconButton(onPressed: ()=> addOperatortoEvent(context, '-'),
+                          icon: const Icon(CupertinoIcons.minus_circle), iconSize: 40),
+                      IconButton(onPressed: ()=> addOperatortoEvent(context, '*'),
+                          icon: const Icon(CupertinoIcons.multiply_circle), iconSize: 40),
+                      IconButton(onPressed: ()=> addOperatortoEvent(context, '÷'),
+                          icon: const Icon(CupertinoIcons.divide_circle), iconSize: 40),
+                      IconButton(onPressed:
+                                  canPressEquals(state.userInput, state.buttonEnable) ?
+                                  ()=> context.read<NumberTypingBloc>().add(EqualsPress()) : null,
+                          icon: const Icon(CupertinoIcons.equal_circle), iconSize: 40),
+                      ElevatedButton(onPressed: null, child: Text('Convert'),)
                     ],
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: ColoredBox(
-                    color: Colors.orange,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        IconButton(onPressed: ()=> addOperatortoEvent(context, '+'),
-                            icon: const Icon(CupertinoIcons.add_circled)),
-                        IconButton(onPressed: ()=> addOperatortoEvent(context, '-'),
-                            icon: const Icon(CupertinoIcons.minus_circle)),
-                        IconButton(onPressed: ()=> addOperatortoEvent(context, '*'),
-                            icon: const Icon(CupertinoIcons.multiply_circle)),
-                        IconButton(onPressed: ()=> addOperatortoEvent(context, '÷'),
-                            icon: const Icon(CupertinoIcons.divide_circle)),
-                        IconButton(onPressed: null, icon: const Icon(CupertinoIcons.equal_circle)),
-                        const ElevatedButton(onPressed: null, child: Text('Convert'))
-
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
+          const Spacer(),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -225,7 +223,8 @@ class NumberTypingPage extends StatelessWidget {
 
 TextStyle characterDisplay = const TextStyle(
   fontFamily: 'ari_numbers',
-  fontSize: 150
+  fontSize: 150,
+  color: Colors.black
 );
 TextStyle characterStyle = const TextStyle(
                           fontFamily: 'ari_numbers',

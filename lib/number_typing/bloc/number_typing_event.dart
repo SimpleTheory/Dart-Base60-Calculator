@@ -16,3 +16,4 @@ class OperatorPress extends NumberTypingEvent{
   late String operator;
   OperatorPress({required this.operator});
 }
+class EqualsPress extends NumberTypingEvent{}

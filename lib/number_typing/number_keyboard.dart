@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:sexigesimal_alpha/math/base_60_math.dart';
 
 class Character{
   int baseSymbol; // button 6 5
@@ -306,7 +307,6 @@ String symbolsToCommas(String symbols){
   translate['-']='-';
   String commas = '';
   for (String char in symbols.characters){
-    print(char);
     String charToAdd = translate[char]!;
     if (RegExp(r'^\d+$').hasMatch(charToAdd)){
       charToAdd += ',';
@@ -316,6 +316,54 @@ String symbolsToCommas(String symbols){
   if (commas.contains(',;')){commas = commas.replaceAll(',;', ';');}
   return commas.substring(0, commas.length-1);
 
+}
+extension SymbolTyping on AbsBase60{
+  String toSymbols(){
+    String symbols = '';
+    fraction = remove0sFromEnd(fraction);
+    if (this is Base60){
+      Base60 x = this as Base60;
+      if (x.negative = true){
+        symbols += '-';
+      }
+    }
+    for (int num in number){
+      symbols += getChar(num);
+    }
+    if (fraction.isNotEmpty){
+      symbols += decimalChar;
+      for (int num in fraction){
+        symbols += getChar(num);
+      }
+    }
+    return symbols;
+  }
+}
+String operationService(opSplit_or_userInput){
+  if (opSplit_or_userInput is String){
+    opSplit_or_userInput = operatorSplit(opSplit_or_userInput);
+  }
+
+  Base60 x(String s)=> Base60.from_commas(s);
+
+  String num1 = symbolsToCommas(opSplit_or_userInput[0]);
+  String operator = opSplit_or_userInput[1];
+  String num2 = symbolsToCommas(opSplit_or_userInput[2]);
+
+  if(operator =='+'){
+    return (x(num1)+x(num2)).toSymbols();}
+
+  else if(operator == '-'){
+    return (x(num1)-x(num2)).toSymbols();}
+
+  else if(operator == '*'){
+    return (x(num1)*x(num2)).toSymbols();}
+
+  else if(operator == '÷'){
+    return (x(num1)/x(num2)).toSymbols();
+  }
+
+  throw ArgumentError('Operation Service Error: Params: $opSplit_or_userInput');
 }
 // symbols
 // lines
