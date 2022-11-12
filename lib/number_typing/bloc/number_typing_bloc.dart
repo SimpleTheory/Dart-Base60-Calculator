@@ -118,17 +118,22 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
       }
       else if(ogStringOpSplit[2].isEmpty){return;}
       else{
-        String result = operationService(ogStringOpSplit);
-        emit(NumberTypingInitial.initial(currentString: result + opString));
-        return;
+        try {
+          String result = operationService(ogStringOpSplit);
+          emit(NumberTypingInitial.initial(currentString: result + opString));
+        }
+        on Exception{emit(NumberError.reset());}
       }
 
       // TODO When implement equals have other operators return: result {op} ...
     });
     on<EqualsPress>((event, emit){
+      try{
       String result = operationService(state.userInput);
-      emit(NumberTypingInitial.initial(currentString: result));
+      emit(NumberTypingInitial.initial(currentString: result));}
+          on Exception{emit(NumberError.reset());}
     });
+    on<ClearPress>((event,emit){emit(NumberTypingInitial.initial());});
   }
 }
 
@@ -177,3 +182,4 @@ RichText userInputWidget(String userInput){
     ));
   }
 }
+

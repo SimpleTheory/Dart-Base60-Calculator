@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sexigesimal_alpha/number_typing/number_keyboard.dart';
 import 'bloc/number_typing_bloc.dart';
-
+//TODO: Add snackbar error when integer multiplication or division is too big
 class NumberTypingPage extends StatelessWidget {
   const NumberTypingPage({Key? key}) : super(key: key);
   // Add event with add method to block
@@ -38,9 +38,18 @@ class NumberTypingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Number Typing')),
-      body: BlocBuilder<NumberTypingBloc, NumberTypingState>(
-      builder: (context, state) {
+      appBar: AppBar(title: const Text('Number Typing')),
+      body: BlocConsumer<NumberTypingBloc, NumberTypingState>(
+        listener: (context, state){
+          if (state is NumberError){
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Text('The numbers in the operation were too big for me :(')
+                ));
+          }
+        },
+        builder: (context, state) {
        return Column(
          crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -70,7 +79,9 @@ class NumberTypingPage extends StatelessWidget {
                                   canPressEquals(state.userInput, state.buttonEnable) ?
                                   ()=> context.read<NumberTypingBloc>().add(EqualsPress()) : null,
                           icon: const Icon(CupertinoIcons.equal_circle), iconSize: 40),
-                      ElevatedButton(onPressed: null, child: Text('Convert'),)
+                      ElevatedButton(onPressed: null, child: const Text('Convert'),),
+                      ElevatedButton(onPressed: ()=>context.read<NumberTypingBloc>().add(ClearPress()),
+                          child: const Text('Clear'))
                     ],
                   ),
                 ],

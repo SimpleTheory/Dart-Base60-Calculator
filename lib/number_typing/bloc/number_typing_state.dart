@@ -95,6 +95,11 @@ class NumberTypingInitial extends NumberTypingState {
   factory NumberTypingInitial.initial({String currentString = ''})=>NumberTypingInitial(userInput: currentString, proxyNumber: ProxyNumber());
 }
 
+class NumberError extends NumberTypingState{
+  NumberError({required super.userInput, required super.proxyNumber, super.buttonEnable});
+  factory NumberError.reset()=>NumberError(userInput: '', proxyNumber: ProxyNumber());
+}
+
 
 class ProxyNumber{
   int? baseSymbol, lines, subnotation;

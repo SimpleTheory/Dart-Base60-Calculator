@@ -757,15 +757,18 @@ AbsBase60 lazySubtraction(AbsBase60 subtractee, AbsBase60 subtractor){
 // Multiplication --------------------------------------------------------------
 List<int> intMultiplication(List<int> n1, List<int> n2) {
   // YOU WANT THE SMALLEST NUMBER IN FOR LOOP OR ELSE THE PROGRAM WILL HANG!!!
-  List<int> sum = [0];
+  // List<int> sum = [0];
   AbsBase60 n1abs = AbsBase60(number: n1, fraction: []);
   AbsBase60 n2abs = AbsBase60(number: n2, fraction: []);
-  n1 = returnMin(n1abs, n2abs).number; // iterator
-  n2 = returnMax(n1abs, n2abs).number; // adder
-  for (int _ in ari.range(AbsBase60(number: n1, fraction: []).toInt())) {
-    sum = addItemsInListNumber(n2, sum);
-  }
-  return sum;
+  // n1 = returnMin(n1abs, n2abs); // iterator
+  // n2 = returnMax(n1abs, n2abs); // adder
+  return AbsBase60.from_integer((n1abs.toInt() * n2abs.toInt())).number;
+  // n1abs = AbsBase60(number: n1, fraction: []);
+  // // if (n1abs.toInt() > pow(10, 6)){throw Exception('Multiplication by two numbers that are too large');}
+  // for (int _ in ari.range(AbsBase60(number: n1, fraction: []).toInt())) {
+  //   sum = addItemsInListNumber(n2, sum);
+  // }
+  // return sum;
 }
 AbsBase60 multiply(AbsBase60 n1, AbsBase60 n2){
   WholeBase60Number wn1 = n1.wholenumberizer();

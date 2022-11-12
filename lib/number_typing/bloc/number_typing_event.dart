@@ -17,3 +17,4 @@ class OperatorPress extends NumberTypingEvent{
   OperatorPress({required this.operator});
 }
 class EqualsPress extends NumberTypingEvent{}
+class ClearPress extends NumberTypingEvent{}
