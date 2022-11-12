@@ -323,7 +323,7 @@ extension SymbolTyping on AbsBase60{
     fraction = remove0sFromEnd(fraction);
     if (this is Base60){
       Base60 x = this as Base60;
-      if (x.negative = true){
+      if (x.negative){
         symbols += '-';
       }
     }

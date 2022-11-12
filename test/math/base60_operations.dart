@@ -10,6 +10,11 @@ void main(){
       expect(result.negative, true);
       expect(result.toString(), '-2');
     });
+    test('-2 + 2', (){
+      Base60 result = Base60.from_integer(-2) + Base60.from_integer(2);
+      expect(result.negative, false);
+      expect(result.toString(), '0');
+    });
 
   });
 }
