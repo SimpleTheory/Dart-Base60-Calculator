@@ -75,7 +75,7 @@ class AbsBase60{
   AbsBase60.zero(){number=[0]; fraction=[];}
   AbsBase60.from_integer(int int){number = intToBase(int.abs(), 60); fraction=[];}
   factory AbsBase60.from_double(double double){
-    for (num i in ari.range(101)){
+    for (num i in ari.range(20)){
       num currentAnswer = double * pow(60, i);
       if (currentAnswer.isInt){
         return WholeBase60Number(
@@ -84,10 +84,10 @@ class AbsBase60{
             reversed: false).toAbs60();
       }
     }
-    int timetoround = (double * pow(60, 101)).round();
+    int timetoround = (double * pow(60, 21)).round();
     return WholeBase60Number(
         number: AbsBase60.from_integer(timetoround).number,
-        seximals: 101,
+        seximals: 21,
         reversed: true).toAbs60().round();
   }
 

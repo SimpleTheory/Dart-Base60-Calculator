@@ -58,7 +58,7 @@ class NumberTypingPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  userInputWidget(state.userInput),
+                  Flexible(child: userInputWidget(state.userInput)),
                 ],
               ),
               Row(
@@ -235,8 +235,9 @@ class NumberTypingPage extends StatelessWidget {
 TextStyle characterDisplay = const TextStyle(
   fontFamily: 'ari_numbers',
   fontSize: 150,
-  color: Colors.black
+  color: Colors.black,
+  overflow: TextOverflow.ellipsis
 );
 TextStyle characterStyle = const TextStyle(
                           fontFamily: 'ari_numbers',
-                          fontSize: 40);
+                          fontSize: 40); // ratio font size
