@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,6 @@ class NumberTypingPage extends StatelessWidget {
   bool mapOfSymbol(BuildContext context, String symbol){
     return context.read<NumberTypingBloc>().state.buttonEnable[symbol]!;
   }
-
   bool canPressNegative(String input, Map<String, bool> map){
     if (isInitMap(map)){
       if (input.isEmpty || input.endsWith(' ')){return true;}
@@ -58,7 +58,7 @@ class NumberTypingPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Flexible(child: userInputWidget(state.userInput)),
+                  Flexible(child: userInputWidget(state.userInput, context)),
                 ],
               ),
               Row(
@@ -89,155 +89,449 @@ class NumberTypingPage extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                    onPressed: (canPressNegative(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(NegativePress()): null,
-                    child: Text('-', style: characterStyle)),
-                ElevatedButton(
-                    onPressed: (canPressPeriod(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(PeriodPress()): null,
-                    child: Text('·', style: characterStyle))
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[0].character)) ?
-                    ()=>addSymboltoEvent(context, listOfCharacters[0].character) : null,
-                    child: Text(
-                        listOfCharacters[0].character,
-                        style: characterStyle
-                    )
-                ),
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[1].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[1].character) : null,
-                    child: Text(
-                        listOfCharacters[1].character,
-                        style: characterStyle
-                    )),
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[2].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[2].character) : null,
-                    child: Text(
-                        listOfCharacters[2].character,
-                        style: characterStyle
-                    )
-                ),
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[3].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[3].character) : null,
-                    child: Text(
-                        listOfCharacters[3].character,
-                        style: characterStyle
-                    )
-                ),
+          SizedBox(
+              height: MediaQuery.of(context).size.height/3,
+              child: LayoutBuilder(
+                builder: (layoutContext, constraints){print(constraints.maxWidth);
+                  if (constraints.maxWidth <= 800){
+                    return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Expanded(child: Spacer()),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed: (canPressNegative(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(NegativePress()): null,
+                            child: buttonText(('-'))),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed: (canPressPeriod(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(PeriodPress()): null,
+                            child: buttonText('·')),
+                      ),
+                      const Expanded(child: Spacer()),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[0].character)) ?
+                            ()=>addSymboltoEvent(context, listOfCharacters[0].character) : null,
+                            child: buttonText(listOfCharacters[0].character)),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[1].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[1].character) : null,
+                            child: buttonText(listOfCharacters[1].character)),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[2].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[2].character) : null,
+                            child: buttonText(listOfCharacters[2].character)),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[3].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[3].character) : null,
+                            child: buttonText(listOfCharacters[3].character)),
+                      ),
 
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[4].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[4].character) : null,
-                    child: Text(
-                        listOfCharacters[4].character,
-                        style: characterStyle
-                    )),
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[5].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[5].character) : null,
-                    child: Text(
-                        listOfCharacters[5].character,
-                        style: characterStyle
-                    )
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[6].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[6].character) : null,
-                    child: Text(
-                        listOfCharacters[6].character,
-                        style: characterStyle
-                    )
-                ),
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[10].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[10].character) : null,
-                    child: Text(
-                        listOfCharacters[10].character,
-                        style: characterStyle
-                    )),
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[12].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[12].character) : null,
-                    child: Text(
-                        listOfCharacters[12].character,
-                        style: characterStyle
-                    )
-                ),
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[15].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[15].character) : null,
-                    child: Text(
-                        listOfCharacters[15].character,
-                        style: characterStyle
-                    )
-                ),
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[20].character)) ? ()=>
-                        addSymboltoEvent(context, listOfCharacters[20].character) : null,
-                    child: Text(
-                        listOfCharacters[20].character,
-                        style: characterStyle
-                    )
-                ),
-                ElevatedButton(
-                    onPressed:(mapOfSymbol(context, listOfCharacters[30].character)) ? ()=>
-                    addSymboltoEvent(context, listOfCharacters[30].character) : null,
-                    child: Text(
-                        listOfCharacters[30].character,
-                        style: characterStyle
-                    )),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                IconButton(onPressed: ()=>leftArrowPress(context), icon: const Icon(Icons.arrow_back)),
-                ElevatedButton(onPressed:(mapOfSymbol(context, '1')) ? ()=>
-                addSymboltoEvent(context, '1') : null, child: const Text('1')),
-                ElevatedButton(onPressed:(mapOfSymbol(context, '2')) ? ()=> addSymboltoEvent(context, '2') : null,
-                    child: const Text('2')),
-                ElevatedButton(onPressed:(mapOfSymbol(context, '3')) ? ()=> addSymboltoEvent(context, '3') : null,
-                    child: const Text('3')),
-                ElevatedButton(onPressed:(mapOfSymbol(context, '4')) ? ()=> addSymboltoEvent(context, '4') : null,
-                    child: const Text('4')),
-                IconButton(onPressed: (mapOfSymbol(context, 'arrow right')) ? ()=> rightArrowPress(context) : null,
-                    icon: const Icon(Icons.arrow_forward))
-              ],
-            )
-          ],)
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[4].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[4].character) : null,
+                            child: buttonText(listOfCharacters[4].character)),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[5].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[5].character) : null,
+                            child: buttonText((listOfCharacters[5].character))),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[6].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[6].character) : null,
+                            child: buttonText(listOfCharacters[6].character)),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[10].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[10].character) : null,
+                            child: buttonText(listOfCharacters[10].character)),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[12].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[12].character) : null,
+                            child: buttonText(listOfCharacters[12].character)),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[15].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[15].character) : null,
+                            child: buttonText(listOfCharacters[15].character)),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[20].character)) ? ()=>
+                                addSymboltoEvent(context, listOfCharacters[20].character) : null,
+                            child: buttonText(listOfCharacters[20].character)),
+                      ),
+                      Expanded(
+                        child: ElevatedButton(
+                            onPressed:(mapOfSymbol(context, listOfCharacters[30].character)) ? ()=>
+                            addSymboltoEvent(context, listOfCharacters[30].character) : null,
+                            child: buttonText(listOfCharacters[30].character)),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height/20,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(child: IconButton(onPressed: ()=>leftArrowPress(context), icon: const Icon(Icons.arrow_back))),
+                        Expanded(
+                          child: ElevatedButton(onPressed:(mapOfSymbol(context, '1')) ? ()=>
+                          addSymboltoEvent(context, '1') : null, child: buttonText('1')),
+                        ),
+                        Expanded(
+                          child: ElevatedButton(onPressed:(mapOfSymbol(context, '2')) ? ()=> addSymboltoEvent(context, '2') : null,
+                              child: buttonText('2')),
+                        ),
+                        Expanded(
+                          child: ElevatedButton(onPressed:(mapOfSymbol(context, '3')) ? ()=> addSymboltoEvent(context, '3') : null,
+                              child: buttonText('3')),
+                        ),
+                        Expanded(
+                          child: ElevatedButton(onPressed:(mapOfSymbol(context, '4')) ? ()=> addSymboltoEvent(context, '4') : null,
+                              child: buttonText('4')),
+                        ),
+                        Expanded(
+                          child: IconButton(onPressed: (mapOfSymbol(context, 'arrow right')) ? ()=> rightArrowPress(context) : null,
+                              icon: const Icon(Icons.arrow_forward)),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+            );}
+                  else if (800 < constraints.maxWidth && constraints.maxWidth <= 1200){
+                    return Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: constraints.maxWidth/8,
+                          vertical: 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Expanded(child: Spacer()),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed: (canPressNegative(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(NegativePress()): null,
+                                      child: buttonText(('-'))),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed: (canPressPeriod(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(PeriodPress()): null,
+                                      child: buttonText('·')),
+                                ),
+                                const Expanded(child: Spacer()),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[0].character)) ?
+                                          ()=>addSymboltoEvent(context, listOfCharacters[0].character) : null,
+                                      child: buttonText(listOfCharacters[0].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[1].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[1].character) : null,
+                                      child: buttonText(listOfCharacters[1].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[2].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[2].character) : null,
+                                      child: buttonText(listOfCharacters[2].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[3].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[3].character) : null,
+                                      child: buttonText(listOfCharacters[3].character)),
+                                ),
+
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[4].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[4].character) : null,
+                                      child: buttonText(listOfCharacters[4].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[5].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[5].character) : null,
+                                      child: buttonText((listOfCharacters[5].character))),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[6].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[6].character) : null,
+                                      child: buttonText(listOfCharacters[6].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[10].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[10].character) : null,
+                                      child: buttonText(listOfCharacters[10].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[12].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[12].character) : null,
+                                      child: buttonText(listOfCharacters[12].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[15].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[15].character) : null,
+                                      child: buttonText(listOfCharacters[15].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[20].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[20].character) : null,
+                                      child: buttonText(listOfCharacters[20].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[30].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[30].character) : null,
+                                      child: buttonText(listOfCharacters[30].character)),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height/20,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Expanded(child: IconButton(onPressed: ()=>leftArrowPress(context), icon: const Icon(Icons.arrow_back))),
+                                  Expanded(
+                                    child: ElevatedButton(onPressed:(mapOfSymbol(context, '1')) ? ()=>
+                                        addSymboltoEvent(context, '1') : null, child: buttonText('1')),
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(onPressed:(mapOfSymbol(context, '2')) ? ()=> addSymboltoEvent(context, '2') : null,
+                                        child: buttonText('2')),
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(onPressed:(mapOfSymbol(context, '3')) ? ()=> addSymboltoEvent(context, '3') : null,
+                                        child: buttonText('3')),
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(onPressed:(mapOfSymbol(context, '4')) ? ()=> addSymboltoEvent(context, '4') : null,
+                                        child: buttonText('4')),
+                                  ),
+                                  Expanded(
+                                    child: IconButton(onPressed: (mapOfSymbol(context, 'arrow right')) ? ()=> rightArrowPress(context) : null,
+                                        icon: const Icon(Icons.arrow_forward)),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        )
+                    );
+                  }
+                  else{
+                    return Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: constraints.maxWidth/6,
+                            vertical: 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Expanded(child: Spacer()),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed: (canPressNegative(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(NegativePress()): null,
+                                      child: buttonText(('-'))),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed: (canPressPeriod(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(PeriodPress()): null,
+                                      child: buttonText('·')),
+                                ),
+                                const Expanded(child: Spacer()),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[0].character)) ?
+                                          ()=>addSymboltoEvent(context, listOfCharacters[0].character) : null,
+                                      child: buttonText(listOfCharacters[0].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[1].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[1].character) : null,
+                                      child: buttonText(listOfCharacters[1].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[2].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[2].character) : null,
+                                      child: buttonText(listOfCharacters[2].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[3].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[3].character) : null,
+                                      child: buttonText(listOfCharacters[3].character)),
+                                ),
+
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[4].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[4].character) : null,
+                                      child: buttonText(listOfCharacters[4].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[5].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[5].character) : null,
+                                      child: buttonText((listOfCharacters[5].character))),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[6].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[6].character) : null,
+                                      child: buttonText(listOfCharacters[6].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[10].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[10].character) : null,
+                                      child: buttonText(listOfCharacters[10].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[12].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[12].character) : null,
+                                      child: buttonText(listOfCharacters[12].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[15].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[15].character) : null,
+                                      child: buttonText(listOfCharacters[15].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[20].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[20].character) : null,
+                                      child: buttonText(listOfCharacters[20].character)),
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                      onPressed:(mapOfSymbol(context, listOfCharacters[30].character)) ? ()=>
+                                          addSymboltoEvent(context, listOfCharacters[30].character) : null,
+                                      child: buttonText(listOfCharacters[30].character)),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height/20,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Expanded(child: IconButton(onPressed: ()=>leftArrowPress(context), icon: const Icon(Icons.arrow_back))),
+                                  Expanded(
+                                    child: ElevatedButton(onPressed:(mapOfSymbol(context, '1')) ? ()=>
+                                        addSymboltoEvent(context, '1') : null, child: buttonText('1')),
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(onPressed:(mapOfSymbol(context, '2')) ? ()=> addSymboltoEvent(context, '2') : null,
+                                        child: buttonText('2')),
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(onPressed:(mapOfSymbol(context, '3')) ? ()=> addSymboltoEvent(context, '3') : null,
+                                        child: buttonText('3')),
+                                  ),
+                                  Expanded(
+                                    child: ElevatedButton(onPressed:(mapOfSymbol(context, '4')) ? ()=> addSymboltoEvent(context, '4') : null,
+                                        child: buttonText('4')),
+                                  ),
+                                  Expanded(
+                                    child: IconButton(onPressed: (mapOfSymbol(context, 'arrow right')) ? ()=> rightArrowPress(context) : null,
+                                        icon: const Icon(Icons.arrow_forward)),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        )
+                    );
+
+                  }
+                  },
+              ),
+          )
         ],
       );
-  },
+    },
 ),
     );
   }
 }
 
-TextStyle characterDisplay = const TextStyle(
+TextStyle characterDisplay = TextStyle(
   fontFamily: 'ari_numbers',
   fontSize: 150,
-  color: Colors.black,
+  color: NumberTypingState.textColor,
   overflow: TextOverflow.ellipsis
 );
 TextStyle characterStyle = const TextStyle(
                           fontFamily: 'ari_numbers',
                           fontSize: 40); // ratio font size
+AutoSizeText buttonText(String text) => AutoSizeText(text, style: characterStyle, maxLines: 1,);

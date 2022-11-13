@@ -14,12 +14,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Base60',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
       darkTheme: ThemeData.dark(),
       theme: ThemeData(
-
+        primaryTextTheme: Typography().black,
+        textTheme: TextTheme(
+          bodyText2: TextStyle(color: Colors.black)
+        ),
+        primaryColor: Colors.black,
         primarySwatch: Colors.blue,
       ),
       // Wrap page with correct bloc provider

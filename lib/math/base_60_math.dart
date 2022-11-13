@@ -571,6 +571,7 @@ List<List<int>> prep_compare(List<int> l1, List<int> l2, {bool number=true, bool
 
   List<int> prepped_self = prepped_number[0]+prepped_fraction[0];
   List<int> prepped_other = prepped_number[1]+prepped_fraction[1];
+  if (prepped_self.isEmpty && prepped_other.isEmpty){return 'eq';}
   for (int i in ari.range(prepped_self.length)){
     if (prepped_self[i] > prepped_other[i]){return 'gt';}
     if (prepped_self[i] < prepped_other[i]){return 'lt';}

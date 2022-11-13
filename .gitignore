@@ -48,4 +48,3 @@ app.*.map.json
 
 *.py
 /test/trying_things_out.dart
-/test/trying_things_out.dart

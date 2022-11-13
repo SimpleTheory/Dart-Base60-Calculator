@@ -1,0 +1,3 @@
+FIX COLORING FOR USERINPUT DEPENDENT ON THEMEMODE
+
+FIX bug for 5 - 10 or smaller - bigger as it crashes the program

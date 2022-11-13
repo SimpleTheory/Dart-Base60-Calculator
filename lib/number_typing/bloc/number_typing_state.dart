@@ -23,6 +23,8 @@ final Map<String, bool> staticInitButtonEnable = {
 bool isInitMap(Map<String, bool> comparison){
   return const MapEquality<String, bool>().equals(staticInitButtonEnable, comparison);
 }
+var brightness = SchedulerBinding.instance.window.platformBrightness;
+bool isDarkMode = brightness == Brightness.dark;
 
 @immutable
 abstract class NumberTypingState {
@@ -47,6 +49,8 @@ abstract class NumberTypingState {
     listOfCharacters[30].character: true,
     'arrow right': false,
   };
+  static Color textColor = isDarkMode ? Colors.white : Colors.black;
+
 
 //<editor-fold desc="Data Methods">
   NumberTypingState({

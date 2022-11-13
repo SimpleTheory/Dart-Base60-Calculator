@@ -36,13 +36,29 @@ dependencies:
   cupertino_icons: ^1.0.5
   collection: ^1.16.0
   flutter_bloc: ^8.1.1
-  bloc_test: ^9.1.0
+  auto_size_text: ^3.0.0
   ari_utils:
     git: https://github.com/SimpleTheory/ari_utils_dart.git
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  bloc_test: ^9.1.0
+  flutter_launcher_icons: ^0.10.0
+
+flutter_icons:
+  image_path: "assets/imgs/babylon_icon.png"
+  android: true
+  ios: true
+  web:
+    generate: true
+    image_path: "assets/imgs/babylon_icon.png"
+    background_color: "#00010"
+    theme_color: "#00010"
+  windows:
+    generate: true
+    image_path: "assets/imgs/babylon_icon.png"
+    icon_size: 56
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

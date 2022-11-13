@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:sexigesimal_alpha/number_typing/character_typing_page.dart';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -13,6 +14,7 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
   NumberTypingBloc() : super(NumberTypingInitial.initial()) {
     on<NumberTypingInProgress>((event, emit) {
       print('inside symbol press with ${event.symbol}');
+      print(NumberTypingState.textColor);
       if (state.proxyNumber.baseSymbol==null){
         state.proxyNumber.baseSymbol = symbolToInt[event.symbol];
       }
@@ -163,7 +165,7 @@ bool canConvert(String str, Map<String, bool> map){
   return !canPressEquals(str, map) && str.isNotEmpty;
 }
 
-RichText userInputWidget(String userInput){
+RichText userInputWidget(String userInput, BuildContext context){
   List<String>? opSplit = operatorSplit(userInput);
   if (opSplit == null){
     return RichText(text: TextSpan(
@@ -176,7 +178,7 @@ RichText userInputWidget(String userInput){
     return RichText(text: TextSpan(
       children: <TextSpan>[
         TextSpan(text: opSplit[0], style: characterDisplay),
-        TextSpan(text: ' ${opSplit[1]} ', style: const TextStyle(fontSize: 50, color: Colors.black)),
+        TextSpan(text: ' ${opSplit[1]} ', style: TextStyle(fontSize: 50, color: NumberTypingState.textColor)),
         TextSpan(text: opSplit[2], style: characterDisplay),
       ]
     ));
