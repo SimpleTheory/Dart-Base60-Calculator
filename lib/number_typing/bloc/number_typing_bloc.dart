@@ -13,8 +13,7 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
   //Takes in intitial state and works onevent
   NumberTypingBloc() : super(NumberTypingInitial.initial()) {
     on<NumberTypingInProgress>((event, emit) {
-      print('inside symbol press with ${event.symbol}');
-      print(NumberTypingState.textColor);
+      // print('inside symbol press with ${event.symbol}');
       if (state.proxyNumber.baseSymbol==null){
         state.proxyNumber.baseSymbol = symbolToInt[event.symbol];
       }

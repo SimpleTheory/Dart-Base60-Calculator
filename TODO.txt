@@ -1,3 +1,5 @@
-FIX COLORING FOR USERINPUT DEPENDENT ON THEMEMODE
+BUGS:
+• Incorrect use of parent widget and keyboard crashing on threshold sizes
 
-FIX bug for 5 - 10 or smaller - bigger as it crashes the program
+IMPLEMENTATIONS
+• Conversion feature with new bloc and keyboard therein

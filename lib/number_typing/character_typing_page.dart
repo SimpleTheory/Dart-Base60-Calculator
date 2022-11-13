@@ -92,7 +92,7 @@ class NumberTypingPage extends StatelessWidget {
           SizedBox(
               height: MediaQuery.of(context).size.height/3,
               child: LayoutBuilder(
-                builder: (layoutContext, constraints){print(constraints.maxWidth);
+                builder: (layoutContext, constraints){
                   if (constraints.maxWidth <= 800){
                     return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
