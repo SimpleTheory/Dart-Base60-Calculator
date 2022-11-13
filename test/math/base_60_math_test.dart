@@ -86,8 +86,11 @@ void main() {
             equals(ZipItem([25, 34, 40], 0)));
       });
       test('Subtract Fraction Carryover', (){
+        // 5  5  40
+        // 30 40 20
+        // 34 25 20
         ZipItem<List<int>, int> a = base_60_math.subtractFraction([5, 5, 40], [30, 40, 20]);
-        expect(a ,equals(ZipItem([25, 34, 40], -1)));
+        expect(a ,equals(ZipItem([34, 25, 20], -1)));
       });
       test('add fraction carry over 2', (){
         base_60_math.AbsBase60 a = base_60_math.AbsBase60.from_commas('1,2,3,4,5');

@@ -93,7 +93,7 @@ class NumberTypingPage extends StatelessWidget {
               height: MediaQuery.of(context).size.height/3,
               child: LayoutBuilder(
                 builder: (layoutContext, constraints){
-                  if (constraints.maxWidth <= 800){
+                  if (MediaQuery.of(context).size.width <= 800){
                     return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -229,10 +229,10 @@ class NumberTypingPage extends StatelessWidget {
                   )
                 ],
             );}
-                  else if (800 < constraints.maxWidth && constraints.maxWidth <= 1200){
+                  else if (800 < MediaQuery.of(context).size.width && MediaQuery.of(context).size.width <= 1200){
                     return Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: constraints.maxWidth/8,
+                          horizontal: MediaQuery.of(context).size.width/8,
                           vertical: 0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -374,7 +374,7 @@ class NumberTypingPage extends StatelessWidget {
                   else{
                     return Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: constraints.maxWidth/6,
+                            horizontal: MediaQuery.of(context).size.width/6,
                             vertical: 0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -512,9 +512,8 @@ class NumberTypingPage extends StatelessWidget {
                           ],
                         )
                     );
-
                   }
-                  },
+                },
               ),
           )
         ],

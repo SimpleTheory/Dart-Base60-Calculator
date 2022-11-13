@@ -1,5 +1,6 @@
 BUGS:
 • Incorrect use of parent widget and keyboard crashing on threshold sizes
 
-IMPLEMENTATIONS
+FEATURES:
 • Conversion feature with new bloc and keyboard therein
+• Add explanation pages and about plus a corner menu to access them

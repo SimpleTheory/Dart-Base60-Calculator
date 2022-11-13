@@ -620,18 +620,19 @@ Base60 toAddOrSubADDITION(Base60 first, Base60 second){
     AbsBase60 answer = lazyAddition(first, second);
     return answer.toBase60(negative: first.negative);
   }
+
   // if unequal parity
   String comparison = absComparator(first.abs(), second.abs());
   if (comparison == 'eq'){return Base60.zero();}
   // if first.toAbs() > second.toAbs()
   // first - second sign is first.negative
   else if (comparison == 'gt'){
-    AbsBase60 answer = lazySubtraction(first, second);
+    AbsBase60 answer = lazySubtraction(first.abs(), second.abs());
     return answer.toBase60(negative: first.negative);
   }
   // else
   // second - first
-  AbsBase60 answer = lazySubtraction(second, first);
+  AbsBase60 answer = lazySubtraction(second.abs(), first.abs());
   return answer.toBase60(negative: !first.negative);
 }
 // Addition --------------------------------------------------------------------
@@ -724,10 +725,10 @@ ari.ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> sub
   );
   if (comparison == 'eq'){return ari.ZipItem([], 0);}
   else if (comparison == 'lt'){
-    // swap variables set negative to true
-    List<int> temp = subtractee;
-    subtractee = subtractor;
-    subtractor = temp;
+  //   // swap variables set negative to true
+  //   List<int> temp = subtractee;
+  //   subtractee = subtractor;
+  //   subtractor = temp;
     carryover = -1;
   }
   List<List<int>> prepSubee_prepSuber = prep_compare(subtractee, subtractor,
@@ -741,18 +742,23 @@ ari.ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> sub
 AbsBase60 lazySubtraction(AbsBase60 subtractee, AbsBase60 subtractor){
   subtractee = subtractee.copyWith();
   subtractor = subtractor.copyWith();
+  print('hello $subtractee: subee | $subtractor suber');
+
   if (subtractee==subtractor){return AbsBase60.zero();}
   else if (subtractee<subtractor){
+    print('if ee<er $subtractee - subee');
     var temp = subtractee;
     subtractee = subtractor;
     subtractor = temp;
   }
   ari.ZipItem<List<int>, int> fracResults = subtractFraction(subtractee.fraction, subtractor.fraction);
+  print('subee $subtractee | suber $subtractor | frac results $fracResults');
 
   subtractee.number.negativeIndexEquals(-1, subtractee.number.negativeIndex(-1)+fracResults.item2);
 
 
   List<int> numberResult = subtractNumber(subtractee.number, subtractor.number);
+  print('new num ${subtractee} | number result ${AbsBase60(number: numberResult, fraction: [])}');
   return AbsBase60(number: numberResult, fraction: fracResults.item1);
 }
 // Multiplication --------------------------------------------------------------

@@ -30,6 +30,15 @@ void main(){
       expect(result.negative, false);
       expect(result.toString(), '6');
     });
-
+    test(';30 - ;31', (){
+      Base60 result = Base60.from_commas(';30') - Base60.from_commas(';31');
+      expect(result.negative, true);
+      expect(result.toString(), '-0;1');
+    });
+    test('2.1 - 0.2', (){
+      Base60 result = Base60.from_commas('2;1') - Base60.from_commas(';2');
+      expect(result.negative, false);
+      expect(result.toString(), '1;59');
+    });
   });
 }
