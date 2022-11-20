@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
 import 'package:sexigesimal_alpha/math/base_60_math.dart' as base_60_math;
 import 'package:ari_utils/ari_utils.dart';
-import 'absBase60_test.dart';
 //try copywith & copy constructor or methods
 
 //generic

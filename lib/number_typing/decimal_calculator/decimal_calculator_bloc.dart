@@ -1,9 +1,7 @@
 import 'package:ari_utils/ari_utils.dart';
-import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:sexigesimal_alpha/global_bloc/global_bloc.dart';
 import 'package:sexigesimal_alpha/main.dart';
 import 'package:sexigesimal_alpha/math/index.dart';
 import 'package:sexigesimal_alpha/number_typing/bloc/number_typing_bloc.dart';
@@ -12,7 +10,7 @@ part 'decimal_calculator_event.dart';
 part 'decimal_calculator_state.dart';
 
 class DecimalCalculatorBloc extends Bloc<DecimalCalculatorEvent, DecimalCalculatorState> {
-  DecimalCalculatorBloc({String input=''}) : super(DecimalCalculatorInitial(userInput: input)) {
+  DecimalCalculatorBloc() : super(DecimalCalculatorInitial()) {
     on<DecimalTypingInProgress>((event, emit) {
       emit(DecimalCalculatorInitial(userInput: state.userInput + event.numberOrNegOrPeriod));
     });
@@ -51,7 +49,9 @@ class DecimalCalculatorBloc extends Bloc<DecimalCalculatorEvent, DecimalCalculat
     on<DecimalConvert>((event, emit) {
       String preanswer = state.userInput.trim();
       if (preanswer.isEmpty){
-        Navigator.of(event.context).push(NoAnimationNav(builder: (context)=>MyApp()));
+        globalBloc.state.numberTypingBloc.add(ClearPress());
+        Navigator.of(event.context).pushReplacement(NoAnimationNav(builder: (context)=>MyApp()));
+        return;
       }
       if (RegExp(r'^[-0.]+$').hasMatch(preanswer)){preanswer='0';}
 
@@ -59,10 +59,11 @@ class DecimalCalculatorBloc extends Bloc<DecimalCalculatorEvent, DecimalCalculat
           ? Base60.from_integer(int.parse(preanswer)).toSymbols()
           : Base60.from_double(double.parse(preanswer)).toSymbols();
 
-      Navigator.of(event.context).push(NoAnimationNav(
+      globalBloc.state.numberTypingBloc.add(OnConvertTo(conversionInput: answer));
+      Navigator.of(event.context).pushReplacement(NoAnimationNav(
           builder: (context)=>
               BlocProvider.value(
-                value: NumberTypingBloc(input: answer),
+                value: globalBloc.state.numberTypingBloc,
                 child: MyApp(),
               )
       ));
@@ -91,6 +92,9 @@ class DecimalCalculatorBloc extends Bloc<DecimalCalculatorEvent, DecimalCalculat
     });
     on<DecimalClear>((event, emit){
       emit(DecimalCalculatorInitial(userInput: ''));
+    });
+    on<DecimalOnConverTo>((event, emit){
+      emit(DecimalCalculatorInitial(userInput: event.conversionInput));
     });
   }
 }

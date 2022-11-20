@@ -17,3 +17,7 @@ class DecimalConvert extends DecimalCalculatorEvent{
 }
 class DecimalEquals extends DecimalCalculatorEvent{}
 class DecimalClear extends DecimalCalculatorEvent{}
+class DecimalOnConverTo extends DecimalCalculatorEvent{
+  late String conversionInput;
+  DecimalOnConverTo({required this.conversionInput});
+}

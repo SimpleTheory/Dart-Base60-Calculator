@@ -192,6 +192,7 @@ List<String>? operatorSplit(String currentInput){
       return result;
     }
   }
+  return null;
 }
 String decimalChar = '·';
 class CharacterState{

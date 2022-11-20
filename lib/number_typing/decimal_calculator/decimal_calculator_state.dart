@@ -46,5 +46,5 @@ abstract class DecimalCalculatorState {
 }
 
 class DecimalCalculatorInitial extends DecimalCalculatorState {
-  DecimalCalculatorInitial({required super.userInput});
+  DecimalCalculatorInitial({super.userInput=''});
 }

@@ -3,10 +3,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sexigesimal_alpha/global_bloc/global_bloc.dart';
 import 'package:sexigesimal_alpha/math/base_60_math.dart';
 import 'package:sexigesimal_alpha/number_typing/character_typing_page.dart';
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:sexigesimal_alpha/number_typing/decimal_calculator/decimal_calculator_bloc.dart';
 import 'package:sexigesimal_alpha/number_typing/decimal_calculator/decimal_typing_main.dart';
 import 'package:sexigesimal_alpha/number_typing/number_keyboard.dart';
@@ -16,7 +15,7 @@ part 'number_typing_state.dart';
 
 class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
   //Takes in intitial state and works onevent
-  NumberTypingBloc({String input=''}) : super(NumberTypingInitial.initial(currentString: input)) {
+  NumberTypingBloc() : super(NumberTypingInitial.initial()) {
     on<NumberTypingInProgress>((event, emit) {
       // print('inside symbol press with ${event.symbol}');
       if (state.proxyNumber.baseSymbol==null){
@@ -142,18 +141,24 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
     on<ClearPress>((event,emit){emit(NumberTypingInitial.initial());});
     on<ConvertPress>((event, emit){
       if (state.userInput.isEmpty){
-        Navigator.of(event.context).push(NoAnimationNav(builder: (context)=>DecimalTyping()));
+        globalBloc.state.decimalBloc.add(DecimalClear());
+        Navigator.of(event.context).pushReplacement(NoAnimationNav(builder: (context)=>DecimalTyping()));
+        return;
       }
       Base60 b60Input = Base60.from_commas(symbolsToCommas(state.userInput));
       num b60num = b60Input.toNum();
       String nextScreenInput = b60num.isInt ? b60num.toInt().toString() : b60num.toString();
-      Navigator.of(event.context).push(NoAnimationNav(
+      globalBloc.state.decimalBloc.add(DecimalOnConverTo(conversionInput: nextScreenInput));
+      Navigator.of(event.context).pushReplacement(NoAnimationNav(
           builder: (context)=>
             BlocProvider.value(
-                value: DecimalCalculatorBloc(input: nextScreenInput),
+                value: globalBloc.state.decimalBloc,
                 child: DecimalTyping(),
             )
       ));
+    });
+    on<OnConvertTo>((event, emit){
+      emit(NumberTypingInitial.initial(currentString: event.conversionInput));
     });
   }
 }

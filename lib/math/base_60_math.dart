@@ -492,8 +492,6 @@ class WholeBase60Number{
   }
 
   AbsBase60 toAbs60(){
-    print('sex');
-    print(seximals);
     WholeBase60Number self = copyWith();
     self.unReverse();
     if (seximals==0){return AbsBase60(number: self.number, fraction: []);}
@@ -509,9 +507,9 @@ class WholeBase60Number{
       return AbsBase60(number: [0], fraction: remove0sFromEnd(result));
     }
     List<List<int>> number_frac = ari.splitBeforeIndex(self.number, seximals*-1);
-    print(number_frac);
+    // print(number_frac);
     int? repeat = repeatingStart(number_frac[1]);
-    print('repeat $repeat');
+    // print('repeat $repeat');
     if (repeat==0){return AbsBase60(number: number_frac[0], fraction: []);}
     else if (repeat==59){return AbsBase60(number: number_frac[0], fraction: number_frac[1]).round();}
     return AbsBase60(number: number_frac[0], fraction: remove0sFromEnd(number_frac[1]));
@@ -704,6 +702,7 @@ int? repeatingStart(List x, {int cnt = 4}){
   List newL = x.sublist(0, cnt);
   Set set = Set.from(newL);
   if (set.length==1){return newL[0];}
+  return null;
 }
 // Base60 Utility Functions ----------------------------------------------------
 Base60 toAddOrSubADDITION(Base60 first, Base60 second){
@@ -860,7 +859,7 @@ List<int> intMultiplication(List<int> n1, List<int> n2) {
   AbsBase60 n1abs = AbsBase60(number: n1, fraction: []);
   AbsBase60 n2abs = AbsBase60(number: n2, fraction: []);
   // BigInt
-  print('INTMULT ${n1abs.toBigInt() * n2abs.toBigInt()}');
+  // print('INTMULT ${n1abs.toBigInt() * n2abs.toBigInt()}');
   // n1 = returnMin(n1abs, n2abs); // iterator
   // n2 = returnMax(n1abs, n2abs); // adder
   return AbsBase60.from_bigint((n1abs.toBigInt() * n2abs.toBigInt())).number;
@@ -872,22 +871,22 @@ List<int> intMultiplication(List<int> n1, List<int> n2) {
   // return sum;
 }
 AbsBase60 multiply(AbsBase60 n1, AbsBase60 n2){
-  print('mult ${n1.toNum()} | ${n2.toNum()}');
+  // print('mult ${n1.toNum()} | ${n2.toNum()}');
   WholeBase60Number wn1 = n1.wholenumberizer();
   WholeBase60Number wn2 = n2.wholenumberizer();
   List<int> number = intMultiplication(wn1.number, wn2.number);
-  print('mult result $number');
+  // print('mult result $number');
   int seximals = wn1.seximals + wn2.seximals;
   return WholeBase60Number(number: number, seximals: seximals).toAbs60();
 }
 // Division --------------------------------------------------------------------
 AbsBase60 inverse(AbsBase60 number){
   WholeBase60Number wholeNumber = number.wholenumberizer();
-  print('$wholeNumber | ${wholeNumber.toInt()}');
+  // print('$wholeNumber | ${wholeNumber.toInt()}');
   for (int i in ari.range(11)){
     double currentAnswer = (pow(60, wholeNumber.seximals+i))/wholeNumber.toInt();
     if (currentAnswer.isInt){
-      print('$currentAnswer | i=$i');
+      // print('$currentAnswer | i=$i');
       return WholeBase60Number(
           number: AbsBase60.from_integer(currentAnswer.toInt()).number,
           seximals: i).toAbs60();

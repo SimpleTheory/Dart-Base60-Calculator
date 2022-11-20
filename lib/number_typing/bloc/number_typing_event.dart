@@ -22,3 +22,7 @@ class ConvertPress extends NumberTypingEvent{
   late BuildContext context;
   ConvertPress({required this.context});
 }
+class OnConvertTo extends NumberTypingEvent{
+  late String conversionInput;
+  OnConvertTo({required this.conversionInput});
+}

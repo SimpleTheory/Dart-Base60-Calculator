@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:sexigesimal_alpha/math/base_60_math.dart';
 import 'package:sexigesimal_alpha/math/index.dart';
 import 'package:sexigesimal_alpha/number_typing/character_typing_page.dart';
 import 'package:timer_builder/timer_builder.dart';
