@@ -699,6 +699,7 @@ List<int> bigIntToBase(BigInt integer, int base) {
   return answer;
 }
 int? repeatingStart(List x, {int cnt = 4}){
+  cnt = x.length>= cnt ? cnt : x.length;
   List newL = x.sublist(0, cnt);
   Set set = Set.from(newL);
   if (set.length==1){return newL[0];}
