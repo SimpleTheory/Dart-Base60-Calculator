@@ -1,5 +1,4 @@
 // Imports
-
 import 'package:ari_utils/ari_utils.dart' as ari;
 import 'package:collection/collection.dart';
 import 'dart:math';
@@ -73,7 +72,24 @@ class AbsBase60{
     else{number = remove0sFromEnd(number, end: false);}
   }
   AbsBase60.zero(){number=[0]; fraction=[];}
+  factory AbsBase60.from_num(number){
+    if (number is num){
+      if (number.isInt){
+        number = number.toInt();
+      }
+      else{
+        number = number.toDouble();
+      }
+    }
+    
+    if (number is int){return AbsBase60.from_integer(number);}
+    else if (number is double){return AbsBase60.from_double(number);}
+    else if (number is BigInt){return AbsBase60.from_bigint(number);}
+    throw ArgumentError('$number of type ${number.runtimeType} is not supported in from_num constructor.\n'
+        'Supported values include: num, double, int, bigint');
+  }
   AbsBase60.from_integer(int int){number = intToBase(int.abs(), 60); fraction=[];}
+  AbsBase60.from_bigint(BigInt bigint){number=bigIntToBase(bigint.abs(), 60); fraction=[];}
   factory AbsBase60.from_double(double double){
     for (num i in ari.range(20)){
       num currentAnswer = double * pow(60, i);
@@ -110,7 +126,15 @@ class AbsBase60{
       ).toList().sum.toInt();
   double toDouble(){
     WholeBase60Number wholeNumber = wholenumberizer();
-    return wholeNumber.toInt() / pow(60, wholeNumber.seximals);
+    return wholeNumber.toBigInt() / BigInt.from(60).pow(wholeNumber.seximals);
+  }
+  BigInt toBigInt(){
+    BigInt bigBase = BigInt.from(60);
+    List<BigInt> sumList = ari.reverse(number).mapIndexed((index, element)
+      => BigInt.from(element) * bigBase.pow(index)).toList();
+    BigInt sum = BigInt.zero;
+    for (BigInt i in sumList){sum += i;}
+    return sum;
   }
   @override
   String toString(){
@@ -136,7 +160,10 @@ class AbsBase60{
   }
   AbsBase60 abs()=>copyWith();
   Base60 toBase60({negative=false}) => Base60(number: number, fraction: fraction, negative: negative);
-
+  num toNum(){
+    if (isInt()){return toInt();}
+    return toDouble();
+  }
   //</editor-fold>
 
   //<editor-fold desc="Operators">
@@ -242,6 +269,11 @@ class Base60 extends AbsBase60{
     throw ArgumentError('Val $val of ${val.runtimeType} is an invalid arg type'
         'for Base60 convert');
 
+  }
+  @override
+  num toNum(){
+    if (isInt()){return toInt();}
+    return toDouble();
   }
 
 
@@ -460,11 +492,28 @@ class WholeBase60Number{
   }
 
   AbsBase60 toAbs60(){
+    print('sex');
+    print(seximals);
     WholeBase60Number self = copyWith();
     self.unReverse();
     if (seximals==0){return AbsBase60(number: self.number, fraction: []);}
-
+    else if (seximals == number.length){
+      return AbsBase60(number: [0], fraction: remove0sFromEnd(List.from(number)));
+    }
+    else if(seximals > number.length){
+      int difference = seximals - number.length;
+      List<int> result = List.from(number);
+      for (int _ in ari.range(difference)){
+        result.insert(0, 0);
+      }
+      return AbsBase60(number: [0], fraction: remove0sFromEnd(result));
+    }
     List<List<int>> number_frac = ari.splitBeforeIndex(self.number, seximals*-1);
+    print(number_frac);
+    int? repeat = repeatingStart(number_frac[1]);
+    print('repeat $repeat');
+    if (repeat==0){return AbsBase60(number: number_frac[0], fraction: []);}
+    else if (repeat==59){return AbsBase60(number: number_frac[0], fraction: number_frac[1]).round();}
     return AbsBase60(number: number_frac[0], fraction: remove0sFromEnd(number_frac[1]));
   }
   Base60 toBase60({negative=false})=>toAbs60().toBase60(negative: negative);
@@ -474,6 +523,16 @@ class WholeBase60Number{
     return self.number.mapIndexed(
             (index, element) => element * pow(60, index)
     ).toList().sum.toInt();
+  }
+  BigInt toBigInt(){
+    BigInt bigBase = BigInt.from(60);
+    WholeBase60Number self = copyWith();
+    self.reverseSelf();
+    List<BigInt> sumList = self.number.mapIndexed((index, element)
+    => BigInt.from(element) * bigBase.pow(index)).toList();
+    BigInt sum = BigInt.zero;
+    for (BigInt i in sumList){sum += i;}
+    return sum;
   }
 
 //</editor-fold>
@@ -613,6 +672,39 @@ List<int> intToBase(int integer, int base) {
   recurse(integer);
   return answer;
 }
+ari.ZipItem<BigInt, int> bigInt_euclidean_division(BigInt dividend, BigInt divisor){
+  BigInt quotient = dividend ~/ divisor;
+  int mod = (dividend % divisor).toInt();
+  return ari.ZipItem(quotient, mod);
+}
+List<int> bigIntToBase(BigInt integer, int base) {
+  if (integer == BigInt.from(0)) {
+    return [0];
+  }
+  List<int> answer = [];
+
+  /// quotient = quotient_mod[0]
+  /// modulus = quotient_mod[1]
+  recurse(BigInt number) {
+    BigInt bigBase = BigInt.from(base);
+    ari.ZipItem<BigInt, int> quotient_mod = bigInt_euclidean_division(number, bigBase);
+    answer.insert(0, quotient_mod[1]);
+    if (quotient_mod[0] < bigBase) {
+      if (quotient_mod[0] > BigInt.zero) {
+        answer.insert(0, quotient_mod[0].toInt());
+      }
+      return true;
+    }
+    recurse(quotient_mod[0]);
+  }
+  recurse(integer);
+  return answer;
+}
+int? repeatingStart(List x, {int cnt = 4}){
+  List newL = x.sublist(0, cnt);
+  Set set = Set.from(newL);
+  if (set.length==1){return newL[0];}
+}
 // Base60 Utility Functions ----------------------------------------------------
 Base60 toAddOrSubADDITION(Base60 first, Base60 second){
   // if equal parity
@@ -742,23 +834,23 @@ ari.ZipItem<List<int>, int> subtractFraction(List<int> subtractee, List<int> sub
 AbsBase60 lazySubtraction(AbsBase60 subtractee, AbsBase60 subtractor){
   subtractee = subtractee.copyWith();
   subtractor = subtractor.copyWith();
-  print('hello $subtractee: subee | $subtractor suber');
+  // print('hello $subtractee: subee | $subtractor suber');
 
   if (subtractee==subtractor){return AbsBase60.zero();}
   else if (subtractee<subtractor){
-    print('if ee<er $subtractee - subee');
+    // print('if ee<er $subtractee - subee');
     var temp = subtractee;
     subtractee = subtractor;
     subtractor = temp;
   }
   ari.ZipItem<List<int>, int> fracResults = subtractFraction(subtractee.fraction, subtractor.fraction);
-  print('subee $subtractee | suber $subtractor | frac results $fracResults');
+  // print('subee $subtractee | suber $subtractor | frac results $fracResults');
 
   subtractee.number.negativeIndexEquals(-1, subtractee.number.negativeIndex(-1)+fracResults.item2);
 
 
   List<int> numberResult = subtractNumber(subtractee.number, subtractor.number);
-  print('new num ${subtractee} | number result ${AbsBase60(number: numberResult, fraction: [])}');
+  // print('new num ${subtractee} | number result ${AbsBase60(number: numberResult, fraction: [])}');
   return AbsBase60(number: numberResult, fraction: fracResults.item1);
 }
 // Multiplication --------------------------------------------------------------
@@ -767,9 +859,11 @@ List<int> intMultiplication(List<int> n1, List<int> n2) {
   // List<int> sum = [0];
   AbsBase60 n1abs = AbsBase60(number: n1, fraction: []);
   AbsBase60 n2abs = AbsBase60(number: n2, fraction: []);
+  // BigInt
+  print('INTMULT ${n1abs.toBigInt() * n2abs.toBigInt()}');
   // n1 = returnMin(n1abs, n2abs); // iterator
   // n2 = returnMax(n1abs, n2abs); // adder
-  return AbsBase60.from_integer((n1abs.toInt() * n2abs.toInt())).number;
+  return AbsBase60.from_bigint((n1abs.toBigInt() * n2abs.toBigInt())).number;
   // n1abs = AbsBase60(number: n1, fraction: []);
   // // if (n1abs.toInt() > pow(10, 6)){throw Exception('Multiplication by two numbers that are too large');}
   // for (int _ in ari.range(AbsBase60(number: n1, fraction: []).toInt())) {
@@ -778,18 +872,22 @@ List<int> intMultiplication(List<int> n1, List<int> n2) {
   // return sum;
 }
 AbsBase60 multiply(AbsBase60 n1, AbsBase60 n2){
+  print('mult ${n1.toNum()} | ${n2.toNum()}');
   WholeBase60Number wn1 = n1.wholenumberizer();
   WholeBase60Number wn2 = n2.wholenumberizer();
   List<int> number = intMultiplication(wn1.number, wn2.number);
+  print('mult result $number');
   int seximals = wn1.seximals + wn2.seximals;
   return WholeBase60Number(number: number, seximals: seximals).toAbs60();
 }
 // Division --------------------------------------------------------------------
 AbsBase60 inverse(AbsBase60 number){
   WholeBase60Number wholeNumber = number.wholenumberizer();
+  print('$wholeNumber | ${wholeNumber.toInt()}');
   for (int i in ari.range(11)){
     double currentAnswer = (pow(60, wholeNumber.seximals+i))/wholeNumber.toInt();
     if (currentAnswer.isInt){
+      print('$currentAnswer | i=$i');
       return WholeBase60Number(
           number: AbsBase60.from_integer(currentAnswer.toInt()).number,
           seximals: i).toAbs60();

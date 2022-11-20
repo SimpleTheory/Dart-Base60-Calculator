@@ -1,5 +1,7 @@
 
 
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sexigesimal_alpha/math/base_60_math.dart';
 
@@ -39,6 +41,20 @@ void main(){
       Base60 result = Base60.from_commas('2;1') - Base60.from_commas(';2');
       expect(result.negative, false);
       expect(result.toString(), '1;59');
+    });
+    test('219661 / 61 == 3601', (){
+      Base60 a = Base60.from_commas('1,1,1,1');
+      Base60 b = Base60.from_commas('1,1');
+      Base60 c = a / b;
+      print('in failed test ${c.toDouble()}');
+      Base60 expected = Base60.from_integer(3601);
+      print(expected.toDouble());
+      expect(c, expected);
+    });
+    test('inverse 1,1 == 0.0163934426229508', (){
+      AbsBase60 result = inverse(AbsBase60.from_commas('1,1'));
+      double pls = result.toDouble();
+      expect(pls, 0.01639344262295082);
     });
   });
 }

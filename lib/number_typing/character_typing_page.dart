@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sexigesimal_alpha/number_typing/base60clock.dart';
 import 'package:sexigesimal_alpha/number_typing/number_keyboard.dart';
 import 'bloc/number_typing_bloc.dart';
 //TODO: Add snackbar error when integer multiplication or division is too big
@@ -32,6 +33,16 @@ class NumberTypingPage extends StatelessWidget {
     if (isInitMap(map)){
       if (input.isEmpty || input.endsWith(' ')){return true;}
       return false;}
+    return false;
+  }
+  bool canConvert(String input, Map<String,bool> map){
+    if (isInitMap(map)){
+      if (input.isEmpty){return true;}
+      List<String>? opSplit = operatorSplit(input);
+      if (opSplit == null && input.isNotEmpty && !RegExp(r'^[·-]+$').hasMatch(input)){
+        return true;
+      }
+    }
     return false;
   }
 
@@ -67,6 +78,7 @@ class NumberTypingPage extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      base60Clock(context),
                       IconButton(onPressed: ()=> addOperatortoEvent(context, '+'),
                           icon: const Icon(CupertinoIcons.add_circled), iconSize: 40,),
                       IconButton(onPressed: ()=> addOperatortoEvent(context, '-'),
@@ -79,7 +91,10 @@ class NumberTypingPage extends StatelessWidget {
                                   canPressEquals(state.userInput, state.buttonEnable) ?
                                   ()=> context.read<NumberTypingBloc>().add(EqualsPress()) : null,
                           icon: const Icon(CupertinoIcons.equal_circle), iconSize: 40),
-                      ElevatedButton(onPressed: null, child: const Text('Convert'),),
+                      ElevatedButton(
+                        onPressed: canConvert(state.userInput, state.buttonEnable) ? ()=>
+                        context.read<NumberTypingBloc>().add(ConvertPress(context: context)): null,
+                        child: const Text('Convert'),),
                       ElevatedButton(onPressed: ()=>context.read<NumberTypingBloc>().add(ClearPress()),
                           child: const Text('Clear'))
                     ],
@@ -101,7 +116,7 @@ class NumberTypingPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Expanded(child: Spacer()),
+                      Spacer(),
                       Expanded(
                         child: ElevatedButton(
                             onPressed: (canPressNegative(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(NegativePress()): null,
@@ -112,7 +127,7 @@ class NumberTypingPage extends StatelessWidget {
                             onPressed: (canPressPeriod(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(PeriodPress()): null,
                             child: buttonText('·')),
                       ),
-                      const Expanded(child: Spacer()),
+                      const Spacer(),
                     ],
                   ),
                   Row(
@@ -241,7 +256,7 @@ class NumberTypingPage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Expanded(child: Spacer()),
+                                const Spacer(),
                                 Expanded(
                                   child: ElevatedButton(
                                       onPressed: (canPressNegative(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(NegativePress()): null,
@@ -252,7 +267,7 @@ class NumberTypingPage extends StatelessWidget {
                                       onPressed: (canPressPeriod(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(PeriodPress()): null,
                                       child: buttonText('·')),
                                 ),
-                                const Expanded(child: Spacer()),
+                                Spacer(),
                               ],
                             ),
                             Row(
@@ -383,7 +398,7 @@ class NumberTypingPage extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Expanded(child: Spacer()),
+                                Spacer(),
                                 Expanded(
                                   child: ElevatedButton(
                                       onPressed: (canPressNegative(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(NegativePress()): null,
@@ -394,7 +409,7 @@ class NumberTypingPage extends StatelessWidget {
                                       onPressed: (canPressPeriod(state.userInput, state.buttonEnable)) ? ()=> context.read<NumberTypingBloc>().add(PeriodPress()): null,
                                       child: buttonText('·')),
                                 ),
-                                const Expanded(child: Spacer()),
+                                Spacer(),
                               ],
                             ),
                             Row(
@@ -529,6 +544,13 @@ TextStyle characterDisplay = TextStyle(
   fontSize: 150,
   color: NumberTypingState.textColor,
   overflow: TextOverflow.ellipsis
+);
+
+TextStyle clockDisplay = TextStyle(
+    fontFamily: 'ari_numbers',
+    fontSize: 50,
+    color: NumberTypingState.textColor,
+    // overflow: TextOverflow.ellipsis
 );
 TextStyle characterStyle = const TextStyle(
                           fontFamily: 'ari_numbers',

@@ -18,3 +18,7 @@ class OperatorPress extends NumberTypingEvent{
 }
 class EqualsPress extends NumberTypingEvent{}
 class ClearPress extends NumberTypingEvent{}
+class ConvertPress extends NumberTypingEvent{
+  late BuildContext context;
+  ConvertPress({required this.context});
+}

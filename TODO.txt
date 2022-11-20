@@ -1,6 +1,10 @@
 BUGS:
-• Incorrect use of parent widget and keyboard crashing on threshold sizes
+• Fix UI of decimal typing page
+• Fix Navigation
+    - Lag
+    - Conversion state
 
 FEATURES:
 • Conversion feature with new bloc and keyboard therein
+    - Implement the fact that conversion actually converts the number with the new block's state updated therein
 • Add explanation pages and about plus a corner menu to access them
