@@ -74,7 +74,15 @@ class DecimalTypingPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Flexible(child: Text(state.userInput, style: characterDisplay,)),
+                      Flexible(child: AutoSizeText(
+                        state.userInput,
+                        style: TextStyle(
+                          fontFamily: 'Arial Rounded MT Bold',
+                          fontSize: MediaQuery.of(context).size.width < 700 ? MediaQuery.of(context).size.width/6
+                          : 110,
+                          color: NumberTypingState.textColor,
+                        ),
+                        maxLines: 2,)),
                     ],
                   ),
                   Row(
@@ -439,7 +447,6 @@ TextStyle characterDisplay = TextStyle(
     fontFamily: 'Arial Rounded MT Bold',
     fontSize: 150,
     color: NumberTypingState.textColor,
-    overflow: TextOverflow.ellipsis
 );
 
 TextStyle characterStyle = const TextStyle(
