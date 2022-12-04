@@ -48,3 +48,6 @@ abstract class DecimalCalculatorState {
 class DecimalCalculatorInitial extends DecimalCalculatorState {
   DecimalCalculatorInitial({super.userInput=''});
 }
+class DecimalConvertListen extends DecimalCalculatorState{
+  DecimalConvertListen({required super.userInput});
+}

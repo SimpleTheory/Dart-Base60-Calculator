@@ -2,7 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sexigesimal_alpha/global_bloc/global_bloc.dart';
+import 'package:sexigesimal_alpha/main.dart';
 import 'package:sexigesimal_alpha/math/index.dart';
+import 'package:sexigesimal_alpha/number_typing/base60clock.dart';
+import 'package:sexigesimal_alpha/number_typing/character_typing_page.dart';
 import 'package:sexigesimal_alpha/number_typing/decimal_calculator/decimal_calculator_bloc.dart';
 import '../bloc/number_typing_bloc.dart';
 
@@ -63,8 +67,37 @@ class DecimalTypingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Decimal Typing')),
-      body: BlocBuilder<DecimalCalculatorBloc, DecimalCalculatorState>(
+      appBar: AppBar(title: const Text('Decimal Typing'), actions: [Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: base60Clock(context),
+      )],),
+      drawer: aridrawer,
+      body: BlocConsumer<DecimalCalculatorBloc, DecimalCalculatorState>(
+        listener: (context, state){
+          if (state is DecimalConvertListen){
+              String preanswer = state.userInput.trim();
+              if (preanswer.isEmpty) {
+                context.read<NumberTypingBloc>().add(ClearPress());
+                context.read<GlobalBloc>().add(
+                    CalculatorConversionEvent(viewMap['NumberTypingPage']!));
+                return;
+              }
+              if (RegExp(r'^[-0.]+$').hasMatch(preanswer)) {
+                preanswer = '0';
+              }
+
+              String answer = !preanswer.contains('.')
+                  ? Base60.from_integer(int.parse(preanswer)).toSymbols()
+                  : Base60.from_double(double.parse(preanswer)).toSymbols();
+
+              context
+                  .read<NumberTypingBloc>()
+                  .add(OnConvertTo(conversionInput: answer));
+              context
+                  .read<GlobalBloc>()
+                  .add(CalculatorConversionEvent(viewMap['NumberTypingPage']!));
+            }
+          },
         builder: (context, state)=>
             Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

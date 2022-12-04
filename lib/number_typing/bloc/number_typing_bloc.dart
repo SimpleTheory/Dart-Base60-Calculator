@@ -140,23 +140,8 @@ class NumberTypingBloc extends Bloc<NumberTypingEvent, NumberTypingState> {
     });
     on<ClearPress>((event,emit){emit(NumberTypingInitial.initial());});
     on<ConvertPress>((event, emit){
-      if (state.userInput.isEmpty){
-        globalBloc.state.decimalBloc.add(DecimalClear());
-        Navigator.of(event.context).pushReplacement(NoAnimationNav(builder: (context)=>DecimalTyping()));
-        return;
-      }
-      Base60 b60Input = Base60.from_commas(symbolsToCommas(state.userInput));
-      num b60num = b60Input.toNum();
-      String nextScreenInput = b60num.isInt ? b60num.toInt().toString() : b60num.toString();
-      globalBloc.state.decimalBloc.add(DecimalOnConverTo(conversionInput: nextScreenInput));
-      Navigator.of(event.context).pushReplacement(NoAnimationNav(
-          builder: (context)=>
-            BlocProvider.value(
-                value: globalBloc.state.decimalBloc,
-                child: DecimalTyping(),
-            )
-      ));
-    });
+      emit(ConvertPressListen(userInput: state.userInput, proxyNumber: ProxyNumber())
+      );});
     on<OnConvertTo>((event, emit){
       emit(NumberTypingInitial.initial(currentString: event.conversionInput));
     });

@@ -47,27 +47,7 @@ class DecimalCalculatorBloc extends Bloc<DecimalCalculatorEvent, DecimalCalculat
       else{emit(DecimalCalculatorInitial(userInput: state.userInput + ' ${event.operator} '));}
     });
     on<DecimalConvert>((event, emit) {
-      String preanswer = state.userInput.trim();
-      if (preanswer.isEmpty){
-        globalBloc.state.numberTypingBloc.add(ClearPress());
-        Navigator.of(event.context).pushReplacement(NoAnimationNav(builder: (context)=>MyApp()));
-        return;
-      }
-      if (RegExp(r'^[-0.]+$').hasMatch(preanswer)){preanswer='0';}
-
-      String answer = !preanswer.contains('.')
-          ? Base60.from_integer(int.parse(preanswer)).toSymbols()
-          : Base60.from_double(double.parse(preanswer)).toSymbols();
-
-      globalBloc.state.numberTypingBloc.add(OnConvertTo(conversionInput: answer));
-      Navigator.of(event.context).pushReplacement(NoAnimationNav(
-          builder: (context)=>
-              BlocProvider.value(
-                value: globalBloc.state.numberTypingBloc,
-                child: MyApp(),
-              )
-      ));
-
+      emit(DecimalConvertListen(userInput: state.userInput));
     });
     on<DecimalEquals>((event, emit){
       List<String>? equation = operatorSplit(state.userInput);
@@ -106,10 +86,10 @@ String sanitizeNumberInputs(String input){
   }
   return input;
 }
-class NoAnimationNav extends MaterialPageRoute {
-  NoAnimationNav({required super.builder});
-  @override
-  Duration get transitionDuration => const Duration();
-  @override
-  Duration get reverseTransitionDuration => const Duration();
-}
+// class NoAnimationNav extends MaterialPageRoute {
+//   NoAnimationNav({required super.builder});
+//   @override
+//   Duration get transitionDuration => const Duration();
+//   @override
+//   Duration get reverseTransitionDuration => const Duration();
+// }

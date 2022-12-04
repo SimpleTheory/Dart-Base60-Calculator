@@ -104,6 +104,11 @@ class NumberError extends NumberTypingState{
   factory NumberError.reset()=>NumberError(userInput: '', proxyNumber: ProxyNumber());
 }
 
+class ConvertPressListen extends NumberTypingState{
+  ConvertPressListen({required super.userInput, required super.proxyNumber});
+
+}
+
 
 class ProxyNumber{
   int? baseSymbol, lines, subnotation;

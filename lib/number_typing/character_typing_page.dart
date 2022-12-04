@@ -1,10 +1,16 @@
+import 'package:ari_utils/ari_utils.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sexigesimal_alpha/main.dart';
 import 'package:sexigesimal_alpha/number_typing/base60clock.dart';
+import 'package:sexigesimal_alpha/number_typing/decimal_calculator/decimal_calculator_bloc.dart';
 import 'package:sexigesimal_alpha/number_typing/number_keyboard.dart';
+import '../global_bloc/global_bloc.dart';
+import '../math/base_60_math.dart';
 import 'bloc/number_typing_bloc.dart';
+
 //TODO: Add snackbar error when integer multiplication or division is too big
 class NumberTypingPage extends StatelessWidget {
   const NumberTypingPage({Key? key}) : super(key: key);
@@ -49,7 +55,15 @@ class NumberTypingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Number Typing')),
+      appBar: AppBar(
+        title: const Text('Sexigesimal Typing'),
+        actions: [
+          Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: base60Clock(context),
+        )
+      ]),
+      drawer: aridrawer,
       body: BlocConsumer<NumberTypingBloc, NumberTypingState>(
         listener: (context, state){
           if (state is NumberError){
@@ -58,6 +72,18 @@ class NumberTypingPage extends StatelessWidget {
                     backgroundColor: Colors.red,
                     content: Text('The numbers in the operation were too big for me :(')
                 ));
+          }
+          else if (state is ConvertPressListen){
+            if (state.userInput.isEmpty){
+              context.read<DecimalCalculatorBloc>().add(DecimalClear());
+              context.read<GlobalBloc>().add(CalculatorConversionEvent(viewMap['DecimalTypingPage']!));
+              return;
+            }
+            Base60 b60Input = Base60.from_commas(symbolsToCommas(state.userInput));
+            num b60num = b60Input.toNum();
+            String nextScreenInput = b60num.isInt ? b60num.toInt().toString() : b60num.toString();
+            context.read<DecimalCalculatorBloc>().add(DecimalOnConverTo(conversionInput: nextScreenInput));
+            context.read<GlobalBloc>().add(CalculatorConversionEvent(viewMap['DecimalTypingPage']!));
           }
         },
         builder: (context, state) {
@@ -78,7 +104,7 @@ class NumberTypingPage extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      base60Clock(context),
+                      // base60Clock(context),
                       IconButton(onPressed: ()=> addOperatortoEvent(context, '+'),
                           icon: const Icon(CupertinoIcons.add_circled), iconSize: 40,),
                       IconButton(onPressed: ()=> addOperatortoEvent(context, '-'),
@@ -93,7 +119,7 @@ class NumberTypingPage extends StatelessWidget {
                           icon: const Icon(CupertinoIcons.equal_circle), iconSize: 40),
                       ElevatedButton(
                         onPressed: canConvert(state.userInput, state.buttonEnable) ? ()=>
-                        context.read<NumberTypingBloc>().add(ConvertPress(context: context)): null,
+                        context.read<NumberTypingBloc>().add(ConvertPress()): null,
                         child: const Text('Convert'),),
                       ElevatedButton(onPressed: ()=>context.read<NumberTypingBloc>().add(ClearPress()),
                           child: const Text('Clear'))
@@ -549,7 +575,8 @@ TextStyle characterDisplay = TextStyle(
 TextStyle clockDisplay = TextStyle(
     fontFamily: 'ari_numbers',
     fontSize: 50,
-    color: NumberTypingState.textColor,
+    color: Color.fromARGB(245, 245, 245, 245)
+    // color: NumberTypingState.textColor,
     // overflow: TextOverflow.ellipsis
 );
 TextStyle characterStyle = const TextStyle(

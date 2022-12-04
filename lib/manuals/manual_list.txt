@@ -1,0 +1,14 @@
+Pages to add:
+    Argument for Base60
+    How the numbers work
+        - The rules
+        - Reading the numbers
+        - Writing the numbers (think fractions)
+    How the keyboard works
+    Talking about the numbers
+    Philosophy about the app and the code base (add github repo link)
+    Cheat Sheet
+        - Basic Rules
+        - Reference (Decimal Number Base60-Frac)
+
+
