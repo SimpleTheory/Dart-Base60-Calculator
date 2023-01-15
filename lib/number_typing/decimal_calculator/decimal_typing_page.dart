@@ -9,6 +9,7 @@ import 'package:sexigesimal_alpha/number_typing/base60clock.dart';
 import 'package:sexigesimal_alpha/number_typing/character_typing_page.dart';
 import 'package:sexigesimal_alpha/number_typing/decimal_calculator/decimal_calculator_bloc.dart';
 import '../bloc/number_typing_bloc.dart';
+import '../cross_page_widgets.dart';
 
 class DecimalTypingPage extends StatelessWidget {
   const DecimalTypingPage({Key? key}) : super(key: key);
@@ -67,10 +68,11 @@ class DecimalTypingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Decimal Typing'), actions: [Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: base60Clock(context),
-      )],),
+      // appBar: AppBar(title: const Text('Decimal Typing'), actions: [Padding(
+      //   padding: const EdgeInsets.all(8.0),
+      //   child: base60Clock(context),
+      // )],),
+      appBar: ariAppBar(context, 'Decimal Typing'),
       drawer: aridrawer,
       body: BlocConsumer<DecimalCalculatorBloc, DecimalCalculatorState>(
         listener: (context, state){
@@ -113,7 +115,7 @@ class DecimalTypingPage extends StatelessWidget {
                           fontFamily: 'Arial Rounded MT Bold',
                           fontSize: MediaQuery.of(context).size.width < 700 ? MediaQuery.of(context).size.width/6
                           : 110,
-                          color: NumberTypingState.textColor,
+                          // color: NumberTypingState.textColor,
                         ),
                         maxLines: 2,)),
                     ],

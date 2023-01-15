@@ -8,3 +8,9 @@ FEATURES:
 • Conversion feature with new bloc and keyboard therein
     - Implement the fact that conversion actually converts the number with the new block's state updated therein
 • Add explanation pages and about plus a corner menu to access them
+---------------------------------
+(Do more thorough math testing to find bugs (conversion is sometimes wrong for instance document and test that))
+
+Implement Pop Quizzes
+Implement Cheat Sheet
+Add references at end of how app works

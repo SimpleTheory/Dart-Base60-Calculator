@@ -523,6 +523,7 @@ class WholeBase60Number{
     ).toList().sum.toInt();
   }
   BigInt toBigInt(){
+    //TODO Convert with 60^10 doesnt work
     BigInt bigBase = BigInt.from(60);
     WholeBase60Number self = copyWith();
     self.reverseSelf();
@@ -534,7 +535,6 @@ class WholeBase60Number{
   }
 
 //</editor-fold>
-
 
 }
 

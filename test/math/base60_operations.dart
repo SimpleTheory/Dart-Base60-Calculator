@@ -42,7 +42,7 @@ void main(){
       Base60 a = Base60.from_commas('1,1,1,1');
       Base60 b = Base60.from_commas('1,1');
       Base60 c = a / b;
-      print('in failed test ${c.toDouble()}');
+      print('$a a $b b $c in failed test ${c.toDouble()}');
       Base60 expected = Base60.from_integer(3601);
       print(expected.toDouble());
       expect(c, expected);

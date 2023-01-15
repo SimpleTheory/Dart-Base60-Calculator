@@ -174,21 +174,27 @@ bool canConvert(String str, Map<String, bool> map){
   return !canPressEquals(str, map) && str.isNotEmpty;
 }
 
-RichText userInputWidget(String userInput, BuildContext context){
+RichText userInputWidget(String userInput, BuildContext context, GlobalState st){
   List<String>? opSplit = operatorSplit(userInput);
   if (opSplit == null){
     return RichText(text: TextSpan(
       children: <TextSpan>[
-        TextSpan(text: userInput, style: characterDisplay)
+        TextSpan(text: userInput, style: characterDisplay(st.isDarkMode))
       ]
     ));
   }
   else{
     return RichText(text: TextSpan(
       children: <TextSpan>[
-        TextSpan(text: opSplit[0], style: characterDisplay),
-        TextSpan(text: ' ${opSplit[1]} ', style: TextStyle(fontSize: 50, color: NumberTypingState.textColor)),
-        TextSpan(text: opSplit[2], style: characterDisplay),
+        TextSpan(text: opSplit[0], style: characterDisplay(st.isDarkMode)),
+        TextSpan(
+            text: ' ${opSplit[1]} ',
+            style: TextStyle(
+                fontSize: 50,
+                color: st.isDarkMode ? Color.fromARGB(245, 245, 245, 245)
+                                      : Colors.black)
+        ),
+        TextSpan(text: opSplit[2], style: characterDisplay(st.isDarkMode)),
       ]
     ));
   }

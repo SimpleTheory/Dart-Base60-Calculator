@@ -3,13 +3,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sexigesimal_alpha/main.dart';
 import 'package:sexigesimal_alpha/number_typing/base60clock.dart';
 import 'package:sexigesimal_alpha/number_typing/decimal_calculator/decimal_calculator_bloc.dart';
 import 'package:sexigesimal_alpha/number_typing/number_keyboard.dart';
 import '../global_bloc/global_bloc.dart';
 import '../math/base_60_math.dart';
 import 'bloc/number_typing_bloc.dart';
+import 'cross_page_widgets.dart';
 
 //TODO: Add snackbar error when integer multiplication or division is too big
 class NumberTypingPage extends StatelessWidget {
@@ -55,14 +55,15 @@ class NumberTypingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sexigesimal Typing'),
-        actions: [
-          Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: base60Clock(context),
-        )
-      ]),
+      // appBar: AppBar(
+      //   title: const Text('Sexigesimal Typing'),
+      //   actions: [
+      //     Padding(
+      //     padding: const EdgeInsets.all(8.0),
+      //     child: base60Clock(context),
+      //   )
+      // ]),
+      appBar: ariAppBar(context, 'Sexagesimal Typing'),
       drawer: aridrawer,
       body: BlocConsumer<NumberTypingBloc, NumberTypingState>(
         listener: (context, state){
@@ -95,7 +96,11 @@ class NumberTypingPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Flexible(child: userInputWidget(state.userInput, context)),
+                  Flexible(child: BlocBuilder<GlobalBloc, GlobalState>(
+                    builder: (b_context, Globalstate) {
+                      return userInputWidget(state.userInput, context, Globalstate);
+  },
+)),
                 ],
               ),
               Row(
@@ -565,10 +570,10 @@ class NumberTypingPage extends StatelessWidget {
   }
 }
 
-TextStyle characterDisplay = TextStyle(
+TextStyle characterDisplay(bool st) => TextStyle(
   fontFamily: 'ari_numbers',
   fontSize: 150,
-  color: NumberTypingState.textColor,
+  color: getColorFromState(st),
   overflow: TextOverflow.ellipsis
 );
 
@@ -582,4 +587,12 @@ TextStyle clockDisplay = TextStyle(
 TextStyle characterStyle = const TextStyle(
                           fontFamily: 'ari_numbers',
                           fontSize: 40); // ratio font size
+
 AutoSizeText buttonText(String text) => AutoSizeText(text, style: characterStyle, maxLines: 1,);
+
+Color getColorFromState(bool isDarkMode){
+  if (isDarkMode){
+    return Color.fromARGB(245, 245, 245, 245);
+  }
+  else{return Colors.black;}
+}

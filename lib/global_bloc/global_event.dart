@@ -11,5 +11,8 @@ class CalculatorConversionEvent extends GlobalEvent{
   Widget view;
   CalculatorConversionEvent(this.view);
 }
+class ChangeDarkMode extends GlobalEvent{
+  ChangeDarkMode();
+}
 
 

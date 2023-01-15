@@ -38,6 +38,9 @@ dependencies:
   flutter_bloc: ^8.1.1
   auto_size_text: ^3.0.0
   timer_builder: ^2.0.0
+  url_launcher: ^6.1.7
+#  pdfx: ^2.3.0
+#  flutter_html: ^2.2.1
   ari_utils:
     git: https://github.com/SimpleTheory/ari_utils_dart.git
 
@@ -81,9 +84,40 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+     - assets/explanation_pdfs/WhatisBase60/0001.jpg
+     - assets/explanation_pdfs/WhatisBase60/0001_inversion.jpg
+     - assets/explanation_pdfs/WhatisBase60/0002.jpg
+     - assets/explanation_pdfs/WhatisBase60/0002_inversion.jpg
+     - assets/explanation_pdfs/WhatisBase60/0003.jpg
+     - assets/explanation_pdfs/WhatisBase60/0003_inversion.jpg
+     - assets/explanation_pdfs/WhatisBase60/0004.jpg
+     - assets/explanation_pdfs/WhatisBase60/0004_inversion.jpg
+     - assets/explanation_pdfs/WhatisBase60/0005.jpg
+     - assets/explanation_pdfs/WhatisBase60/0005_inversion.jpg
+
+     - assets/explanation_pdfs/HowtheNumbersWork/0001.jpg
+     - assets/explanation_pdfs/HowtheNumbersWork/0001_inversion.jpg
+     - assets/explanation_pdfs/HowtheNumbersWork/0002.jpg
+     - assets/explanation_pdfs/HowtheNumbersWork/0002_inversion.jpg
+     - assets/explanation_pdfs/HowtheNumbersWork/0003.jpg
+     - assets/explanation_pdfs/HowtheNumbersWork/0003_inversion.jpg
+     - assets/explanation_pdfs/HowtheNumbersWork/0004.jpg
+     - assets/explanation_pdfs/HowtheNumbersWork/0004_inversion.jpg
+     - assets/explanation_pdfs/HowtheNumbersWork/0005.jpg
+     - assets/explanation_pdfs/HowtheNumbersWork/0005_inversion.jpg
+
+     - assets/imgs/calc_labeled.png
+     - assets/imgs/keyboard_use_example.gif
+
+     - assets/explanation_pdfs/HowtheAppWork/how the app works_page-0001.jpg
+     - assets/explanation_pdfs/HowtheAppWork/how the app works_page-0001_inversion.jpg
+     - assets/explanation_pdfs/HowtheAppWork/how the app works_page-0002.jpg
+     - assets/explanation_pdfs/HowtheAppWork/how the app works_page-0002_inversion.jpg
+     - assets/explanation_pdfs/HowtheAppWork/how the app works_page-0003.jpg
+     - assets/explanation_pdfs/HowtheAppWork/how the app works_page-0003_inversion.jpg
+     - assets/explanation_pdfs/HowtheAppWork/how the app works_page-0004.jpg
+     - assets/explanation_pdfs/HowtheAppWork/how the app works_page-0004_inversion.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

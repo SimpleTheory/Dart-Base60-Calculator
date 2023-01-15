@@ -1,27 +1,25 @@
 part of 'global_bloc.dart';
 
 class GlobalState {
-  static Color textColor = isDarkMode ? Colors.white : Colors.black;
-  bool colorMode = isDarkMode;
+  bool isDarkMode = brightness == Brightness.dark;
   Widget currentView;
-  late Widget calculatorView = currentView;
-  GlobalState({required this.currentView, bool? colorMode, Widget? calculatorView}){
-    colorMode ??= isDarkMode;
-    colorMode = this.colorMode;
-    if (calculatorView != null){
-      this.calculatorView = calculatorView;
-    }
+  late Widget calculatorView = index_view[0];
+  GlobalState({required this.currentView, bool? isDarkMode, Widget? calculatorView}){
+    if (calculatorView != null){this.calculatorView = calculatorView;}
+    if (isDarkMode != null){this.isDarkMode = isDarkMode;}
+
   }
   factory GlobalState.initial(){
     return GlobalState(currentView: viewMap['NumberTypingPage']!);
   }
-  GlobalState copywith({colorMode, currentView})=>
+  GlobalState copywith({isDarkMode, currentView})=>
       GlobalState(
           currentView: currentView ?? this.currentView,
-          colorMode: colorMode ?? this.colorMode);
+          calculatorView: this.calculatorView,
+          isDarkMode: isDarkMode ?? this.isDarkMode);
 
   GlobalState calculatorConversion(Widget view){
-    return GlobalState(currentView: view, calculatorView: view ,colorMode: this.colorMode);
+    return GlobalState(currentView: view, calculatorView: view ,isDarkMode: isDarkMode);
   }
 }
 
