@@ -14,3 +14,7 @@ FEATURES:
 Implement Pop Quizzes
 Implement Cheat Sheet
 Add references at end of how app works
+Update GitHub
+Post in docker container on website
+Post on g-play store
+Make reddit post and share with friends

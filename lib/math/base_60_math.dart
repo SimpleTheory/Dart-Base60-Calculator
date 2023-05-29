@@ -506,7 +506,8 @@ class WholeBase60Number{
       }
       return AbsBase60(number: [0], fraction: remove0sFromEnd(result));
     }
-    List<List<int>> number_frac = ari.splitBeforeIndex(self.number, seximals*-1);
+    // List<List<int>> number_frac = ari.splitBeforeIndex(self.number, seximals*-1);
+    List<List<int>> number_frac = self.number.splitBeforeIndex(seximals * -1);
     // print(number_frac);
     int? repeat = repeatingStart(number_frac[1]);
     // print('repeat $repeat');
